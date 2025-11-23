@@ -2,8 +2,8 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0
-**Dokumenttyp:** Architekturdefinition 
+**Lizenz:** CC-BY-SA 4.0  
+**Dokumenttyp:** Architekturdefinition  
 **Status:** Konzeptphase
 
 ---
@@ -840,4 +840,5 @@ und definiert damit die Grundlage für die nächste Generation wissenschaftliche
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
+
 
