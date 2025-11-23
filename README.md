@@ -1,222 +1,203 @@
-# KORA – Kohärenzorientierte Rechenarchitektur für Big-Data-Langläufer
+# KORA – A Deterministic, Energy-Efficient Architecture Model
+Version 2.0 — Realmodell v3.0
 
-## Projektübersicht
+**Status:** Machbarkeitsstudie
 
-KORA (Kohärenzorientierte Rechenarchitektur) ist ein Forschungsprojekt zur Entwicklung einer spezialisierten Architektur für energieeffiziente, deterministische Verarbeitung großer Datenmengen. Das Projekt adressiert systematische Ineffizienzen moderner Big-Data-Systeme durch Rückkehr zu fundamentalen Prinzipien: Batch-Processing, Determinismus und globale Kohärenz.
+KORA ist ein Architektur- und Ausführungsmodell für effiziente,
+deterministische und reproduzierbare Hochleistungsberechnung.
+Es wurde speziell für Workloads entwickelt, die heute stark durch
+nichtlineare Overheads limitiert sind:
 
-**Autoren:** Frank Meyer  
-**Lizenz:** CC-BY-SA 4.0  
-**Version:** 1.0 (November 2025)  
-**Status:** Machbarkeitsstudie / Konzeptphase
+- KI-Training (z. B. BERT, GPT-Modelle)
+- Big-Data-Analysen und ETL-Strecken
+- numerische Simulationen (CFD, FEM, Klima/Wetter)
+- datenintensive wissenschaftliche Anwendungen
 
----
-
-## Kernkonzept
-
-KORA integriert drei architektonische Komponenten zu einem kohärenten Gesamtsystem:
-
-1. **KORA-Core** – Logischer Hauptprozess für deterministisches Scheduling und globale Datenverwaltung
-2. **Compute-Worker** – Homogene, passive Recheneinheiten ohne Eigenautonomie
-3. **KORA-Net-Layer** – Netzwerk-/I/O-Abschirmung durch epochenbasierte Bündelung
-
-Das zentrale Datenmodell (SRDB – Single Resonance Data Bus) ermöglicht globale Kohärenz ohne Cache-Kohärenzprotokolle.
+KORA zeigt, dass massive Leistungs- und Effizienzgewinne
+nicht durch mehr FLOPs, sondern durch die Reduktion von
+Memory-, Communication- und Synchronisations-Overheads erreicht werden.
 
 ---
 
-## Hauptergebnisse
+## Inhalte der Version 2.0
 
-### Simulation 1: Big-Data-Verarbeitung (5D-Datensatz)
-- **Architektur A** (Standard): Baseline
-- **Architektur B** (KORA auf Standard-Hardware): 28% schneller, 28% weniger Energie
-- **Architektur C** (KORA auf spezialisierter Hardware): 33% schneller, 33% weniger Energie
+Version 2.0 stellt eine vollständige Überarbeitung des ursprünglichen Modells dar.
+Neu eingeführt wurden:
 
-### Simulation 2: KI-Training (BERT-Base, 110M Parameter)
-- **Architektur A** (Standard): 6,2 Tage, 792 kWh, 237 €
-- **Architektur B** (KORA-Software): 5,3 Tage, 674 kWh, 202 € (-15%)
-- **Architektur C** (KORA-Hardware): 1,0 Tage, 29 kWh, 9 € (-96%)
-
-### Simulation 3: Monolithische Hardware
-- **67% weniger Silizium** (2.700 mm² vs. 8.400 mm²)
-- **87% weniger Peripherie-Elektronik**
-- **6× schnellere Verarbeitung**
-- **96% Energieeinsparung**
+- ein realitätsnahes **Compute–Memory–Communication–Sync-Modell (v3.0)**  
+- realistische Architekturparameter (A/B/C)  
+- ein universelles Simulationsmodell, das alle Workloads abdeckt  
+- vollständige Unterstützung für deterministische Ausführung (r_bit, r_run)  
+- realistische Workload-Klassen (BERT, BD-S, BD-L, CFD-M, CFD-L)  
+- energie- und zeitbasierte Performancevergleiche  
+- neue Markdown-Dokumente mit klarer wissenschaftlicher Struktur  
 
 ---
 
-## Dokumentationsstruktur
+## Architekturvarianten (A/B/C)
 
-```
-KORA-Project/
-│
-├── README.md                          (diese Datei)
-├── LICENSE.txt                        (CC-BY-SA 4.0)
-│
-├── docs/
-│   ├── 01_Executive_Summary.md        (Zusammenfassung, 5-8 Seiten)
-│   ├── 02_Architecture_Specification.md (Technische Spezifikation, 15-25 Seiten)
-│   ├── 03_Simulation_Methodology.md   (Methodik & Code, 10-15 Seiten)
-│   └── 04_Future_Outlook.md           (Zukunftsprojektion 2028-2033)
-│
-├── simulations/
-│   ├── simulation_big_data.py         (Reproduzierbarer Python-Code)
-│   ├── simulation_bert_training.py
-│   ├── simulation_monolithic_hw.py
-│   └── results/                       (Berechnete Ergebnisse als CSV)
-│       ├── big_data_results.csv
-│       ├── bert_training_results.csv
-│       └── monolithic_hw_results.csv
-│
-└── figures/
-    ├── architecture_overview.svg      (Architektur-Diagramm)
-    ├── performance_comparison.png     (Performance-Vergleich)
-    └── energy_savings.png             (Energie-Einsparungen)
-```
+### Architektur A – Standard HPC/KI  
+
+Realistische Basis bestehender Rechenzentren  
+(hohe Overheads, hohe Energie, niedrige Reproduzierbarkeit).
+
+### Architektur B – KORA-SW  
+
+Softwareoptimierte Variante auf bestehender Hardware  
+(40–70 % Energieeinsparung, 1.3–2.6× Speedup).
+
+### Architektur C – KORA-HW Monolith  
+
+Monolithische Hardware mit deterministischen Datenpfaden  
+(97–99 % Energieeinsparung, 5–20× Speedup).
+
+Volle Parameterdetails sind in  
+`02_Architecture_Specification.md` beschrieben.
 
 ---
 
-## Zielgruppe
+## Workloads
 
-**Primär:**
-- Forschungsinstitute (Helmholtz, Fraunhofer, DLR, Max-Planck)
-- HPC-Zentren mit Fokus auf Klimamodellierung, CFD, Bioinformatik
-- Universitäten (Informatik, Physik, Computational Science)
+KORA v2.0 unterstützt fünf typisierte Workload-Familien:
 
-**Sekundär:**
-- KI-Forschungslabore mit Interesse an reproduzierbarem Training
-- Hyperscaler mit großen Trainings-Workloads
-- Hardware-Hersteller für spezialisierte Rechnerarchitekturen
-
----
-
-## Entwicklungsphasen
-
-### Phase 1 (2025-2027): Software-Framework
-- Implementierung auf aktueller Hardware (GPUs, CPUs)
-- Validierung der Architekturprinzipien
-- Empirische Messungen an Referenz-Workloads
-
-### Phase 2 (2027-2029): Multi-Chip-Module (MCM)
-- Prototypen mit dedizierter KORA-Logik
-- Erste spezialisierte Hardware-Komponenten
-- Kooperationen mit Forschungsinstituten
-
-### Phase 3 (2029-2033): Monolithische Hardware
-- Vollständig integrierter KORA-Chip (2.500 mm²)
-- Wafer-Scale-Integration für Exascale-Anwendungen
-- Kommerzielle Deployments bei Hyperscalern
+| Key | Workload | Limitierung |
+|------|----------|-------------|
+| BERT | BERT-Large Training | Compute |
+| BD_S | Big-Data Small (52 GB ETL) | Memory |
+| BD_L | Big-Data Large (1 TB, Shuffle) | Memory/Comm/Sync |
+| CFD_M | CFD Medium (100M Zellen) | Communication/Sync |
+| CFD_L | CFD Large (Climate) | Sync/Comm |
 
 ---
 
-## Einschränkungen und Trade-offs
+## Simulationen
 
-KORA ist **kein Universal-Ersatz** für bestehende Systeme. Die Architektur opfert bewusst:
+Die Simulationen basieren auf dem **v3.0-Realmodell**
+(siehe `03_Simulation_Methodology.md`), das vier unabhängige Terme abbildet:
 
-- **Interaktivität**: Keine Unterbrechungen während der Laufzeit
-- **Flexibilität**: Problemdefinition muss vor Ausführung vollständig sein
-- **General-Purpose-Fähigkeit**: Optimiert für strukturierte, deterministische Workloads
+- Compute  
+- Memory  
+- Communication  
+- Synchronisation  
 
-**KORA ist ideal für:**
-- Klimasimulationen, CFD, Finite-Elemente-Methoden
-- Genomanalyse-Pipelines, Molekulardynamik
-- KI-Training in Produktionsumgebungen (definierte Architekturen)
-- Langläufer mit hohen Reproduzierbarkeitsanforderungen
+Ein Korrekturfaktor \(S_W\) pro Workload kalibriert Architektur A exakt
+auf reale Referenzwerte.
 
-**KORA ist ungeeignet für:**
-- Interaktive Datenanalyse (Jupyter, BI-Tools)
-- Transaktionale Datenbanken (OLTP)
-- Echtzeitstreaming (Kafka, Flink)
-- Explorative ML-Forschung mit häufigen Architekturänderungen
+Für alle Workloads und Architekturen führt dies zu realistischen Zeiten
+und Energieverbräuchen.
 
 ---
 
-## Nutzung der Simulationen
+## Kernergebnisse
 
-Alle Simulationen sind in Python implementiert und vollständig reproduzierbar:
+### Geschwindigkeit
 
-```bash
-# Installation
-pip install numpy pandas matplotlib
+- **KORA-SW (B):** 1.3–2.6× schneller  
+- **KORA-HW (C):** 5–20× schneller  
 
-# Ausführung
-cd simulations/
-python simulation_big_data.py
-python simulation_bert_training.py
-python simulation_monolithic_hw.py
+### Energieeffizienz
 
-# Ergebnisse werden in results/ gespeichert
-```
+- **KORA-SW (B):** 40–70 % weniger Energie  
+- **KORA-HW (C):** 97–99 % weniger Energie  
 
-Die Simulationen nutzen synthetische Workloads mit dokumentierten Parametern. Alle Annahmen sind im Code transparent dokumentiert.
+### Reproduzierbarkeit
 
----
-
-## Wissenschaftlicher Kontext
-
-KORA steht nicht im luftleeren Raum. Verwandte Forschungsarbeiten adressieren Einzelaspekte:
-
-- **Deterministic Scheduling**: Echtzeitsysteme, RTOS
-- **Coherent Memory Models**: Cache-Kohärenzprotokolle, Directory-based Coherence
-- **Batch-Processing**: MapReduce, Apache Spark
-- **Wafer-Scale Integration**: Cerebras WSE
-- **Energy-Efficient Computing**: Green HPC, Dark Silicon
-
-**KORA's Beitrag** ist die Integration dieser Konzepte zu einer kohärenz-orientierten Gesamtarchitektur für Big-Data-Langläufer.
+| Arch | r_bit | r_run |
+|------|-------|--------|
+| A | 0.4 | 1.10 |
+| B | 0.8 | 1.02 |
+| C | 1.0 | 1.00 |
 
 ---
 
-## Kontakt und Kooperation
+## Projektstruktur
 
-Dieses Projekt ist als Open-Science-Initiative konzipiert. Kooperationen, Feedback und Beiträge sind willkommen.
+    /
+        README.md
+		LICENSE.md
 
-**Forschungskooperationen:**
-Interessierte Institutionen können sich für Pilotprojekte zur Validierung der KORA-Prinzipien melden.
+    /docs
+        00_Abstract.md
+        01_Executive_Summary.md
+        02_Architecture_Overview.md
+        03_Architecture_Specification_Technical.md
+        04_Software_Specification.md
+        05_API_Reference_TSF_HAPI_ISR.md
+        06_Reproducibility_Specification.md
+        07_Evaluation_and_Benchmarks.md
+        08_Simulation_Methodology.md
+        09_Future_Outlook.md
+        10_Release_Notes_v2.0.md
+        11_Background_and_Scientific_Basis.md
+        12_References.md
+    
+    /simulation
+        kora_sim_engine_v3.py
 
-**Technische Diskussion:**
-Fragen zur Architektur, Implementierung oder Simulationsmethodik können über OSF-Kommentare gestellt werden.
+---
 
-**Zitierung:**
-```
-Meyer, F. (2025). KORA – Kohärenzorientierte Rechenarchitektur 
-für Big-Data-Langläufer. Open Science Framework. 
-https://osf.io/8wyec
-```
+## Simulation Package
+
+Die Simulation ist vollständig implementiert in:
+
+[kora_sim_engine_v3.py]
+
+**Kommandos:**
+
+    python3 kora_sim_engine_v3.py
+
+Ausgabe:
+
+- Zeit in Stunden  
+- Energie in kWh  
+- Speedup  
+- Energieeinsparungen  
+- Zeitanteile (Compute, Memory, Comm, Sync)
 
 ---
 
 ## Lizenz
 
-Dieses Werk ist lizenziert unter **Creative Commons Attribution-ShareAlike 4.0 International (CC-BY-SA 4.0)**.
+Alle Inhalte dieses Projekts stehen unter **CC-BY-SA 4.0** und **MIT** (für Code):
 
-Sie dürfen:
-- **Teilen** – das Material in jedwedem Format oder Medium vervielfältigen und weiterverbreiten
-- **Bearbeiten** – das Material remixen, verändern und darauf aufbauen
+- **Frei nutzbar** für Forschung, Lehre und kommerzielle Anwendungen
+- **Namensnennung erforderlich**: "KORA Project, Frank Meyer in Kooperation mit Claude"
+- **Share-Alike**: Abgeleitete Werke müssen unter gleicher Lizenz stehen
 
-Unter folgenden Bedingungen:
-- **Namensnennung** – Sie müssen angemessene Urheber- und Rechteangaben machen
-- **Weitergabe unter gleichen Bedingungen** – Wenn Sie das Material remixen, verändern oder darauf aufbauen, müssen Sie Ihre Beiträge unter der gleichen Lizenz verbreiten
-
-Vollständiger Lizenztext: siehe LICENSE.txt
+Vollständige Lizenz: siehe `LICENSE.md`
 
 ---
 
-## Änderungshistorie
+## Ziel der Veröffentlichung
 
-**Version 1.0 (November 2025)**
-- Initiale Veröffentlichung
-- Drei vollständige Simulationen
-- Technische Spezifikation
-- Zukunftsprojektion bis 2033
+KORA soll Forschern, Ingenieuren und Unternehmen als Blaupause dienen:
 
----
+- für effizientere Hardware  
+- für optimierte Softwarepipelines  
+- für deterministische Rechenabläufe  
+- für energieeffiziente Rechenzentren  
+- für verlässliche wissenschaftliche Simulationen  
 
-## Danksagungen
-
-Dieses Projekt entstand aus struktureller Kooperation zwischen menschlichem konzeptionellen Denken und KI-basierter Analyse. Die Grundidee basiert auf Denkmuster mit Fokus auf systemische Kohärenz und logische Konsistenz.
-
-Dank an die Open-Science-Community für Infrastruktur und Werkzeuge zur freien Wissensverbreitung.
+Version 2.0 bildet das Fundament für zukünftige Weiterentwicklungen,
+insbesondere für KORA-HW-Prototyping und Multi-Monolith-Systeme.
 
 ---
 
-**Letzte Aktualisierung:** November 2025  
-**OSF-Projekt:** https://osf.io/8wyec  
-**DOI:** [wird nach Registrierung ergänzt]
+## Danksagung
+
+Dieses Projekt entstand aus der Erkenntnis, dass moderne IT-Architekturen für Big-Data-Langläufer suboptimal sind. 
+KORA ist ein Versuch, durch Rückkehr zu fundamentalen Prinzipien (Kohärenz, Determinismus, Batch-Processing) strukturelle Effizienz zurückzugewinnen.
+
+KORA entstand unter struktureller Hilfe von **ChatGPT** *(OpenAI)* und **Claude** *(Anthropic)*.
+
+---
+
+## Versionierung
+
+- **Dokument:** `README.md`  
+- **Version:** **2.0**  
+- **Simulationsmodell:** **M3.0**  
+- **Veröffentlichung:** November 2025  
+- **Code-Repository:** https://github.com/adamsfke/kora  
+- **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
+- **Kontakt:** mailto:adamsfke@proton.me  
