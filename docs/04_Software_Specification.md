@@ -3,8 +3,8 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0
-**Dokumenttyp:** Laufzeit- und Compiler-Spezifikation für KORA-2(SW)
+**Lizenz:** CC-BY-SA 4.0  
+**Dokumenttyp:** Laufzeit- und Compiler-Spezifikation für KORA-2(SW)  
 **Status:** Konzeptphase
 
 ---
@@ -960,3 +960,4 @@ Es bildet den Kern der wissenschaftlichen Infrastruktur von KORA Version 2.0.
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
+
