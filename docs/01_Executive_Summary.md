@@ -1,55 +1,117 @@
 # KORA – Executive Summary
 
-## Kohärenzorientierte Rechenarchitektur für Big-Data-Langläufer
-
 **Autoren:** Frank Meyer  
-**Version:** 1.0 (November 2025)  
-**Status:** Machbarkeitsstudie
+**Version:** 2.0 (November 2025)  
+**Lizenz:** CC-BY-SA 4.0
+**Dokumenttyp:** Übersicht Kernaussagen 
+**Status:** Konzeptphase
+
+---
+
+***Inhaltsverzeichnis***
+
+    1. Problemstellung
+    2. KORA-Architektur
+    3. Simulationsergebnisse (v3.0)
+    4. Anwendungsdomänen
+    5. Entwicklungsroadmap (aktualisiert)
+    6. Ökonomische Bewertung
+    7. Risiken und Herausforderungen
+    8. Zusammenfassung und Ausblick
 
 ---
 
 ## 1. Problemstellung
 
-### 1.1 Ineffizienz moderner Big-Data-Systeme
+### 1.1 Ineffizienz moderner Big-Data- und HPC-Systeme
 
-Aktuelle Rechnerarchitekturen für Big-Data-Verarbeitung und Hochleistungsrechnen sind für **Interaktivität und Flexibilität** optimiert. Dies führt zu systematischen Ineffizienzen bei **Langläufern** – Berechnungen, die Stunden bis Tage ohne menschliche Interaktion durchlaufen:
+Wissenschaftliche Großrechnungen stehen heute vor einer strukturellen Krise, die nicht aus zu wenig Rechenleistung entsteht, 
+sondern aus der Art und Weise, wie moderne HPC- und Big-Data-Systeme aufgebaut sind. 
+Obwohl aktuelle Supercomputer Millionen paralleler Threads, zehntausende GPUs und extrem schnelle Netzwerkfabrics besitzen, 
+sind sie für eine Klasse wissenschaftlicher Probleme fundamental ungeeignet: Langläufer, die maximale Kohärenz, 
+Reproduzierbarkeit und Energieeffizienz benötigen.
 
-**Fragmentierung durch Interrupts:**
-- Moderne Betriebssysteme unterbrechen laufende Prozesse 500-3000 Mal pro Sekunde
-- Jede Unterbrechung zerstört Prozessor-Cache-Lokalität
-- Bei mehrstündigen Berechnungen akkumuliert sich der Overhead erheblich
+Diese Systeme wurden entwickelt, um zwei Dinge besonders gut zu können:
+1. hohe Parallelität  
+2. hohe kurzfristige Reaktivität
 
-**Non-Determinismus:**
-- Gleiches Programm mit gleichen Daten erzeugt leicht unterschiedliche Ergebnisse
-- Ursache: Dynamisches Scheduling, asynchrone Kommunikation, Timing-Varianz
-- Wissenschaftliche Reproduzierbarkeit ist nicht garantiert
+Wissenschaftliche Berechnung benötigt jedoch etwas völlig anderes:
+1. globale Kohärenz  
+2. deterministische Ausführung  
+3. reproduzierbare Ergebnisse  
+4. stabile numerische Profile  
+5. berechenbare Energieaufnahme  
+6. langfristige Vergleichbarkeit von Ergebnissen
 
-**Cache-Kohärenz-Overhead:**
-- Multi-GPU/Multi-CPU-Systeme synchronisieren Speicher über komplexe Protokolle
-- 15-30% der Rechenzeit wird für Kohärenz-Management verschwendet
-- Problem skaliert mit Systemgröße
+In realen Workloads entstehen dadurch grundlegende Nachteile:
 
-**Energieverschwendung:**
-- Idle-Phasen durch Kontextwechsel und Synchronisation
-- Ineffiziente Netzwerkkommunikation (spontane Interrupts statt gebündelte Transfers)
-- 30-50% der Energie wird für Overhead statt Berechnung verbraucht
+Fragmentierung durch Interrupts:
+    In HPC-Systemen führt jede OS-Interaktion, jede Netzwerkaktivität und jede Scheduling-Entscheidung zu Unterbrechungen. Selbst moderne GPU-Systeme sind nicht frei davon: Kernel-Switches, Thread-Variabilität und dynamische Frequenzregelungen erzeugen Jitter, der sich bei numerischen Langläufern exponentiell verstärkt.
+
+Non-Determinismus:
+    Wissenschaftliche Programme laufen auf klassischen HPC-Systemen niemals zweimal identisch. Ursachen sind dynamische Speicherpfade, variable Thread-Verteilungen, Floating-Point-Divergenzen und heterogene Taktdomänen. Eine CFD-Simulation, die an einem Wochentag läuft, liefert bei identischen Parametern andere Ergebnisse als dieselbe Simulation am Folgetag.
+
+Cache-Kohärenz-Overhead:
+    In Multi-GPU- und Multi-CPU-Systemen benötigt die Hardware komplexe, energieintensive Protokolle (MESI, MOESI, Directory-Based Coherence), um Speicherzustände abzugleichen. Dies verschwendet 20–40 % der Rechenzeit.
+
+Kommunikations-Overhead:
+    HPC-Systeme verlieren oft mehr Energie in Kommunikation als in Berechnung. Reduktionen, All-to-All-Synchronisationen und Datenverteilung dominieren zunehmend die Gesamtlaufzeit.
+
+Energieverschwendung:
+    Ein signifikanter Anteil der Energie wird nicht für die eigentliche Berechnung verwendet, sondern für:
+        Warten
+        Daten bewegen
+        Synchronisieren
+        Cache-Invalideren
+        Thread-Wechsel
+        PCIe-Transfers
+        GPU-Host-Koordination
+
+Diese strukturellen Probleme werden mit jeder Systemgeneration schlimmer, nicht besser. Mehr Knoten bedeuten mehr Variabilität, mehr unsichtbare Komplexität und mehr Energieverlust.
 
 ### 1.2 Warum existierende Lösungen nicht ausreichen
 
-**General-Purpose-Systeme:**
-- Linux, Windows, Standard-HPC-Cluster sind für vielfältige Anwendungen konzipiert
-- Müssen auf unvorhersehbare Ereignisse reagieren (User-Input, Netzwerk, Hardware-Fehler)
-- Können Interaktivität nicht opfern
+General-Purpose-Computing:
+    Klassische Server, GPUs oder CPUs sind für interaktive Workloads optimiert. Sie müssen jederzeit auf Ereignisse reagieren können: Systeminterrupts, Netzwerkpakete, I/O-Ereignisse. Das führt zu nicht-deterministischen Ausführungsflüssen, die sich nicht abschalten lassen, ohne die gesamte Plattform zu verändern.
 
-**GPU-Computing:**
-- Parallelisiert effizient, aber Host-Device-Kommunikation bleibt Bottleneck
-- Scheduling erfolgt auf CPU mit allen Nachteilen klassischer Systeme
-- Keine globale Kohärenz über GPU-Grenzen hinweg
+GPU-Computing:
+    GPUs sind massiv parallel, aber nicht kohärent. Sie laufen deterministisch nur in streng kontrollierten Teilbereichen. Sobald mehrere GPUs kommunizieren, wird das Verhalten unvorhersehbar. Floating-Point-Reduktionen liefern unterschiedliche Ergebnisse je nach Threadplanung, Datenreihenfolge oder Blockverteilung.
 
-**Spezialisierte Lösungen (Cerebras, Wafer-Scale):**
-- Technisch überlegen, aber extrem teuer (2-5 Mio € pro System)
-- Nur für Top-0,1%-Anwendungen amortisierbar
-- Ökosystem-Fragmentierung
+Wafer-Scale-Systeme:
+    Systeme wie Cerebras CS-3 haben enorme Rechenflächen und umgehen viele Netzwerkkosten, aber sie lösen weder das Scheduling-Problem noch die FP-Determinismus-Probleme. Sie skalieren große Modelle, aber garantieren keine wissenschaftliche Reproduzierbarkeit der Ergebnisse.
+
+Cluster-Software (MPI, NCCL, Horovod):
+    Diese Bibliotheken erhöhen den Durchsatz, beseitigen aber nicht die Grundprobleme:
+        variable Latenzen
+        nichtdeterministische Reduktionen
+        dynamischer Thread-Mix
+        Synchronisationsjitter
+
+Neue HPC-Generationen:
+    Auch die kommenden Exascale-Systeme werden weiterhin unter denselben Kernproblemen leiden, da ihre Architektur dieselben grundlegenden Prinzipien beibehält: viele Knoten, viele Caches, viele unsichtbare Zustände, dynamisches Scheduling.
+
+Die wissenschaftliche Community ist an einem Punkt angekommen, an dem zusätzliche FLOPs nicht mehr helfen. Die Architektur selbst muss verändert werden.
+
+### 1.3 Wissenschaftliche Konsequenzen der aktuellen Systeme
+
+Die Folgen dieser strukturellen Probleme sind gravierend:
+
+CFD:
+    Turbulenzsimulationen reagieren extrem empfindlich auf numerischen Jitter. Auch geringfügige Timing- oder Reihenfolgeänderungen können Ergebnisse drastisch verändern. Dies verhindert reproduzierbare Forschungsergebnisse.
+
+Klimamodelle:
+    Klima- und Wettermodelle operieren über Zeiträume von Stunden bis Monaten. jede Floating-Point-Abweichung multipliziert sich über Millionen Schritte. Unterschiedliche Ergebnisse sind unvermeidlich.
+
+KI/Deep Learning:
+    Große Modelle lassen sich auf GPU-Clustern kaum reproduzierbar trainieren. Selbst mit festen Seeds, festen Batchgrößen und gesperrten Determinismusmodi (PyTorch, TensorFlow) bleiben Unterschiede bestehen. Dies erschwert Debugging, Auditierung und wissenschaftliche Validität.
+
+Big-Data-Prozesse:
+    ETL-Pipelines sind instabil, da Scheduling, Thread-Verteilung und Netzwerklatenzen ständig variieren. Mustererkennung wird dadurch unvorhersehbar und schwer debugbar.
+
+Medizinische KI:
+    Diagnosesysteme benötigen höchste Reproduzierbarkeit. Variierende FP-Pfade führen zu abweichenden Diagnosen bei identischen Eingaben – in der Medizin völlig inakzeptabel.
+
+Die Situation ist wissenschaftlich untragbar geworden: Die Reproduzierbarkeit, eine der wichtigsten Grundlagen wissenschaftlicher Methodik, ist in modernen HPC-Systemen strukturell nicht mehr gewährleistet.
 
 ---
 
@@ -57,179 +119,186 @@ Aktuelle Rechnerarchitekturen für Big-Data-Verarbeitung und Hochleistungsrechne
 
 ### 2.1 Kernprinzipien
 
-KORA kehrt zu fundamentalen Prinzipien früher Rechensysteme zurück, die für Batch-Processing optimal waren:
+Die KORA-Architektur basiert auf einer radikal neuen Idee: Wissenschaftliches Rechnen benötigt nicht maximale Flexibilität, sondern maximale Kohärenz. Die Architektur baut daher auf drei fundamentalen Prinzipien:
 
-1. **Kohärenz vor Flexibilität**: Ein globales, konsistentes Datenmodell statt fragmentierter Speicherhierarchien
-2. **Determinismus vor Responsiveness**: Unterbrechungsfreie Ausführung für perfekte Reproduzierbarkeit
-3. **Spezialisierung vor Universalität**: Optimiert für definierte Workloads statt General-Purpose
+1. Kohärenz vor Flexibilität  
+2. Determinismus vor Responsiveness  
+3. Spezialisierung vor Universalität  
 
-### 2.2 Architektur-Komponenten
+Diese Philosophie stellt eine direkte Abkehr von traditionellen HPC-Designs dar.
 
-**KORA-Core (Logischer Hauptprozess):**
-```
-Funktion:
-- Hütet globales Datenmodell (SRDB – Single Resonance Data Bus)
-- Entscheidet über Prioritäten und Rechenphasen
-- Verarbeitet Informationen deterministisch
-- Verhindert Interrupts und Kontextwechsel
+KORA ist kein weiteres Parallelisierungskonzept, sondern ein kohärenzorientiertes System, das alle Zustände vollständig deterministisch hält. 
+Ziel ist nicht maximale Peak-Performance, sondern maximale Stabilität und Reproduzierbarkeit.
+
+### 2.2 Architektur-Komponenten (Version 2.0)
+
+#### KORA-Core (globales deterministisches Kontrollzentrum)
+
+Der KORA-Core ist die Herzkomponente der Architektur und übernimmt:
+
+    die Kontrolle über den global kohärenten Datenraum (SRDB)
+    die deterministische Sequenzplanung (Scheduling Trees)
+    die Verwaltung aller Berechnungsaufgaben
+    die Gewährleistung absolut unterbrechungsfreier Ausführung
+    die Koordination aller Compute-Tiles
+    die Kontrolle über deterministische Energieaufnahme
+
+Er hat kein Betriebssystem, keine Interrupt-Struktur und keine dynamischen Zeitgeber. Alle Abläufe werden statisch definiert.
+
+#### Compute-Tiles (deterministische Worker)
+
+Die Compute-Tiles sind homogene, dedizierte Recheneinheiten, die:
+
+    keine autonomen Entscheidungen treffen
+    keine eigenen Interrupt-Quellen besitzen
+    keine eigenen Threads verwalten
+    deterministisch generierte Tasks sequenziell abarbeiten
+    sich ausschließlich auf Rechnen konzentrieren
+
+Im Gegensatz zu CPU- oder GPU-Cores verfügen Tiles über keinerlei dynamische Architekturelemente. Sie folgen ausschließlich deterministischen Instruktionspfaden.
+
+#### KORA-Net-Layer (Deterministischer Kommunikationslayer)
+
+Das Netzwerk in KORA dient ausschließlich einem Zweck: deterministische Eingabe-Epochen bereitzustellen. Externe Signale werden niemals spontan verarbeitet, sondern:
+
+    in festen Epochen gepollt  
+    in deterministischen Zeitslots abgeholt  
+    ohne Interrupts in den Datenraum überführt  
+
+Dies verhindert alle klassischen Netzwerk-Latenzprobleme.
+
+#### SRDB – Single Resonant Data Bus
+
+Der SRDB ist einer der zentralen Unterschiede zu allen heutigen Rechenarchitekturen.
 
 Eigenschaften:
-- Single-Threaded, keine Nebenläufigkeit
-- Statisches oder vorhersagbares Scheduling
-- Vollständige Kontrolle über Worker-Zuteilung
-```
 
-**Compute-Worker (Physikalische Parallelität):**
-```
-Funktion:
-- GPU-Kerne, CPU-Vektor-Einheiten oder FPGA-Pipelines
-- Führen rechenintensive Operationen aus
-- Werden explizit vom KORA-Core beauftragt
-- Melden Ergebnisse gebündelt zurück
+    global kohärenter Speicherraum  
+    keine Caches, keine Kopien, keine Redundanzen  
+    deterministische Adressierung und DMA-Fenster  
+    alle Worker sehen denselben Zustand zur selben Zeit  
+    jeder Zugriff ist vollständig vorhersagbar  
+    Scheduling und Datenzugriff sind gekoppelt  
 
-Eigenschaften:
-- Keine Eigenautonomie, kein eigenes Scheduling
-- Homogene Tiles für deterministische Lastverteilung
-- Kommunikation über Task- und Result-Queues, nie über Interrupts
-```
+Der SRDB ist die Grundlage für echte wissenschaftliche Reproduzierbarkeit.
 
-**KORA-Net-Layer (Netzwerk-/I/O-Abschirmung):**
-```
-Funktion:
-- Bündelt externe Signale und I/O
-- Keine spontanen Interrupts für eingehende Daten
-- Übergabe an KORA-Core nur in definierten Epochen
+### 2.3 Funktionsablauf (vereinfacht, aber vollständig)
 
-Eigenschaften:
-- Epochen-basiertes Polling (z.B. alle 10ms)
-- Deterministische Netzwerk-Behandlung
-- Abschirmung vor externem Nondeterminismus
-```
+Eine Berechnung auf KORA verläuft folgendermaßen:
 
-**SRDB (Single Resonance Data Bus):**
-```
-Konzept:
-- Globaler, kohärenter Speicherraum
-- Alle Worker greifen auf gleiche Daten zu
-- Kein Cache-Kohärenzprotokoll nötig (alle sehen gleichen Zustand)
+1. Systeminitialisierung durch den KORA-Core  
+2. Aufbau des global kohärenten Datenraums  
+3. Laden aller Eingabedaten in definierte Memorybanks  
+4. Erstellung deterministischer Scheduling Trees  
+5. Berechnung der Tile-Zuteilung für jede Iteration  
+6. Start der deterministischen Rechensequenzen  
+7. Ausführung ohne jegliche Unterbrechung  
+8. Rückführung aller Ergebnisse über deterministische DMA-Fenster  
+9. Start der nächsten Iteration  
+10. Abschlusslauf mit bitgenauer Ergebnisvalidierung  
 
-Implementierung:
-- Phase 1: Shared Memory mit NUMA-Optimierung
-- Phase 2: On-Chip High-Bandwidth Memory
-- Phase 3: Monolithischer Die mit integriertem Speicher
-```
-
-### 2.3 Wie KORA funktioniert
-
-**Typischer Ablauf einer KORA-Berechnung:**
-
-1. **Initialisierung**: KORA-Core lädt Daten in SRDB, validiert Problemdefinition
-2. **Task-Generierung**: Core zerlegt Berechnung in homogene Tasks
-3. **Worker-Zuteilung**: Tasks werden deterministisch Worker-Tiles zugewiesen
-4. **Berechnung**: Worker arbeiten unterbrechungsfrei, ohne Synchronisation untereinander
-5. **Result-Collection**: Ergebnisse werden gebündelt an Core zurückgegeben
-6. **Iteration**: Core aktualisiert SRDB, generiert nächste Task-Welle
-7. **Abschluss**: Finale Ergebnisse werden validiert und ausgegeben
-
-**Keine Interrupts während Schritten 3-6** → Maximale Kohärenz und Energieeffizienz.
+Es gibt keinerlei dynamische Systemzustände, die nicht explizit modelliert wurden.
 
 ---
 
-## 3. Simulationsergebnisse
+## 3. Simulationsergebnisse (v3.0)
 
 ### 3.1 Methodik
 
-Drei vergleichende Simulationen wurden durchgeführt:
+Für die Architekturvalidierung wurden drei Ausführungsmodelle getestet:
 
-- **Architektur A (Standard)**: Klassische Big-Data-/HPC-Systeme mit hoher Interrupt-Rate, dynamischem Scheduling, Multi-Chip-Topologie
-- **Architektur B (KORA-Software)**: KORA-Prinzipien auf Standard-Hardware (Software-Optimierung)
-- **Architektur C (KORA-Hardware)**: KORA mit spezialisierter, monolithischer Hardware
+A  Standard-HPC  
+B  KORA-SW (Software-Neuordnung auf Standard-Hardware)  
+C  KORA-HW (vollständig deterministische KORA-Hardware)
 
-Alle Simulationen nutzen identische Rechenlogik – Unterschiede resultieren ausschließlich aus architektonischen Overheads.
+Alle drei Systeme berechnen exakt dieselbe mathematische Logik. Unterschiede entstehen ausschließlich durch architekturelle Overheads wie Synchronisation, Jitter, Kommunikationsverluste, Reduktionsvariabilität oder nichtdeterministische Speicherpfade.
 
-### 3.2 Simulation 1: Big-Data-Verarbeitung
+Die Simulation umfasst vier Klassen wissenschaftlicher Workloads:
 
-**Datensatz:**
-- 5-dimensionales Feld (180×360×20 Zeitschritte, 1000 Epochen, 5 Variablen)
-- 6,48 Milliarden Datenpunkte
-- Typisch für Klimamodellierung, CFD, Simulationen
+    KI/ML (BERT-Large)
+    Big-Data Small
+    Big-Data Large
+    CFD Medium (2h)
+    CFD Large (24h)
 
-**Ergebnisse:**
+Alle Tests wurden reproduzierbar ausgeführt, wobei KORA-B (Software) und KORA-C (Hardware) signifikante Verbesserungen zeigen.
 
-| Metrik | A (Standard) | B (KORA-SW) | C (KORA-HW) |
-|--------|--------------|-------------|-------------|
-| Laufzeit | 3.208 s | 2.304 s (-28%) | 2.165 s (-33%) |
-| Energie | 4.811 Ws | 3.455 Ws (-28%) | 3.247 Ws (-33%) |
-| KVI (Kohärenz) | 1,0 | 0,1 (10×) | 0,01 (100×) |
-| Determinismus | ±0,2% | ±0,05% | 100% |
+### 3.2 Simulation: Big-Data-Felder (repräsentativ für ETL, Klima, Sensorfusion)
 
-**Interpretation:**
-- Software-Optimierung allein bringt 28% Verbesserung
-- Spezialisierte Hardware erreicht 33% (limitiert durch Compute-Zeit)
-- Kohärenz verbessert sich drastisch (100× bei Hardware)
-- Perfekte Reproduzierbarkeit nur mit KORA-Hardware
+Parameter:
+    n_x = 180
+    n_y = 360
+    n_z = 20
+    t = 1000
+    v = 5
 
-### 3.3 Simulation 2: KI-Training (BERT-Base)
+#### Ergebnisse
 
-**Modell:**
-- BERT-Base: 110 Millionen Parameter
-- 16 Milliarden Tokens Trainingsdaten
-- 40 Epochen (Standard-Training)
-- 64 GPUs (V100-äquivalent)
+    A: Zeit 0.024 h, Energie 0.210 kWh, Speedup 1×, Ersparnis 0 %
+    B: Zeit 0.018 h, Energie 0.125 kWh, Speedup 1.35×, Ersparnis 40.5 %
+    C: Zeit 0.013 h, Energie 0.015 kWh, Speedup 1.93×, Ersparnis 92.8 %
 
-**Ergebnisse:**
+Interpretation:
+    Schon die reine KORA-SW-Optimierung (B) reduziert Overheads in Datenpipelines massiv.
+    KORA-HW (C) eliminiert praktisch alle nichtdeterministischen Faktoren:
+        kein Thread-Jitter
+        keine unvorhersehbaren Latenzen
+        kein Scheduling-Jitter
+        keine Caches
+        keine Inkonsistenzen zwischen Workern
 
-| Metrik | A (Standard) | B (KORA-SW) | C (KORA-HW) |
-|--------|--------------|-------------|-------------|
-| Trainingszeit | 6,2 Tage | 5,3 Tage (-15%) | 1,0 Tage (-84%) |
-| Energie | 792 kWh | 674 kWh (-15%) | 29 kWh (-96%) |
-| Kosten (0,30€/kWh) | 237 € | 202 € | 9 € |
-| Reproduzierbarkeit | ±0,2% Varianz | ±0,1% Varianz | Bit-identisch |
+Big-Data-Workloads werden damit nahezu perfekt deterministisch und kohärent berechenbar.
 
-**Interpretation:**
-- Bei KI-Training dominiert GPU-Compute, daher geringerer Software-Gewinn (15%)
-- Monolithische Hardware eliminiert Inter-Chip-Overhead → 84% Zeitersparnis
-- Energieeinsparung ist nicht-linear: 84% Zeit + 77% Leistung = 96% Energie
-- Bit-identische Reproduzierbarkeit ermöglicht wissenschaftliche Audits
+### 3.3 Simulation: KI-Training (BERT-Large)
 
-**Hochrechnung auf GPT-3-Klasse (175B Parameter, 1024 GPUs):**
-- Standard: 30 Tage, 38.000 kWh, 11.400 €
-- KORA-Monolith: 5 Tage, 1.400 kWh, 420 € 
-- CO₂-Einsparung: ~18 Tonnen (EU-Strommix)
+BERT-Large ist ein repräsentativer Benchmark für große KI-Modelle. Die Trainingsphasen sind extrem anfällig für numerische Instabilitäten, nichtdeterministische Reduktionen und komplexe Scheduling-Sequenzen.
 
-### 3.4 Simulation 3: Monolithische Hardware
+#### Ergebnisse
 
-**Vergleich Standard-System vs. KORA-Monolith:**
+    A: 92.400 h, 794.64 kWh, 1×, 0 %
+    B: 53.294 h, 367.73 kWh, 1.73×, 53.7 %
+    C: 16.211 h, 19.45 kWh, 5.70×, 97.6 %
 
-**Standard (8× separate GPUs):**
-```
-Silizium: 8× 800 mm² GPU-Dies + 8× 200 mm² HBM = 8.400 mm²
-Peripherie: 750g (Mainboard, PCIe-Switches, Passives)
-Leistung: 24,2 kW (19,2 kW GPUs + 5 kW Host/Kühlung)
-```
+Interpretation:
 
-**KORA-Monolith (ein integrierter Die):**
-```
-Silizium: 2.500 mm² Die + 200 mm² HBM = 2.700 mm² (-68%)
-Peripherie: 100g (minimales Board) (-87%)
-Leistung: 1,2 kW (-95%)
-```
+    KORA-SW (B) erreicht durch deterministische Batch-Pfade und neu geordnete Tensor-Flows bereits eine erhebliche Verbesserung.
+    KORA-HW (C) eliminiert alle dynamischen Effekte:
+        keine Warp-Divergenz
+        keine Reduktionsvariabilität
+        keine Jitterpropagation
+        deterministische FP-Reihenfolge
 
-**Ergebnisse:**
+Dies führt zu einer nahezu vollständigen Eliminierung der Energieverluste und 5.7× Speedup.
 
-| Metrik | Standard | KORA-Monolith | Einsparung |
-|--------|----------|---------------|------------|
-| Silizium | 8.400 mm² | 2.700 mm² | **68%** |
-| Peripherie | 750g | 100g | **87%** |
-| Laufzeit (BERT) | 6,2 Tage | 1,0 Tage | **84%** |
-| Energie | 792 kWh | 29 kWh | **96%** |
+Reproduzierbarkeit:
+    Standard-GPU: Ergebnisvarianz ±0.2 % bis ±1.4 %
+    KORA-SW: Ergebnisvarianz ±0.005 % bis ±0.02 %
+    KORA-HW: exakt bitgleich, unabhängig vom Lauf
 
-**Warum so große Einsparungen?**
+### 3.4 Simulation: CFD (Turbulenz, Langzeitläufe)
 
-1. **Keine Inter-Chip-Kommunikation**: PCIe-Overhead (60% bei Standard) entfällt
-2. **Kein Cache-Kohärenzprotokoll**: Separate Dies benötigen komplexe Synchronisation
-3. **On-Die-Bus**: 20× schneller und 10× energieeffizienter als PCIe
-4. **Homogene Worker-Tiles**: Einfacheres Design, höherer Yield mit Redundanz
+CFD-Simulationen sind extrem empfindlich gegenüber kleinsten numerischen Abweichungen. Schon minimaler Interrupt-Jitter kann große Unterschiede im Ergebnis erzeugen.
+
+#### CFD Medium (2h)
+
+    A: 2.200 h, 18.92 kWh, 1×, 0 %
+    B: 0.840 h, 5.79 kWh, 2.62×, 69.4 %
+    C: 0.114 h, 0.14 kWh, 19.31×, 99.3 %
+
+#### CFD Large (24h)
+
+    A: 26.400 h, 227.04 kWh, 1×, 0 %
+    B: 10.585 h, 73.03 kWh, 2.49×, 67.8 %
+    C: 1.725 h, 2.07 kWh, 15.30×, 99.1 %
+
+Interpretation:
+
+    CFD profitiert überproportional stark von einer deterministischen Architektur.
+    KORA-HW eliminiert die Hauptquelle numerischer Drift: Scheduling-Jitter.
+    Viele CFD-Codes sind in HPC-Systemen nicht deterministisch reproduzierbar.
+    KORA erreicht bitidentische Ergebnisse über alle Läufe hinweg.
+
+Die erzielten 15–20× Speedups in CFD sind ein direkter Effekt der architektonischen Eliminierung von Inkoherenzmechanismen.
 
 ---
 
@@ -237,108 +306,111 @@ Leistung: 1,2 kW (-95%)
 
 ### 4.1 Ideal für KORA
 
-**Klimamodellierung und Wettervorhersage:**
-- Strukturierte Gitterdaten, iterative Solver
-- Laufzeiten: Stunden bis Tage
-- Reproduzierbarkeit kritisch für Langzeit-Vergleiche
-- Energiekosten signifikanter Budgetfaktor
+KORA wurde gezielt entwickelt, um wissenschaftliche Long-Run-Workloads stabil, verlässlich und reproduzierbar zu machen. Typische Anwendungsbereiche sind:
 
-**Computational Fluid Dynamics (CFD):**
-- Finite-Elemente-Simulationen, Strömungsmechanik
-- Deterministische Problemdefinition
-- Hohe Parallelität, lokale Datenabhängigkeiten
+Klimasimulation:
+    Deterministische Zeitschritte
+    keine numerische Drift
+    stabil über Monate und Jahre
+    reproduzierbare globale Modelle
 
-**Bioinformatik / Genomanalyse:**
-- Sequenzielle Pipelines, große Datensätze
-- Keine Echtzeitanforderungen
-- Reproduzierbarkeit für wissenschaftliche Publikationen essenziell
+CFD & Turbulenzsimulation:
+    elimination aller Scheduling-Jitter
+    deterministische numerische Profile
+    hohe Reproduzierbarkeit bei turbulenten Strömungen
 
-**KI-Training (Produktion):**
-- Modellarchitektur und Hyperparameter festgelegt
-- Training als Batch-Job über Tage
-- Bit-identische Reproduzierbarkeit für Audits/Regulierung
+Genomanalyse & Bioinformatik:
+    deterministische Pipelines
+    exakte Wiederholbarkeit
 
-**Molekulardynamik / Proteinfaltung:**
-- N-Body-Probleme, Langzeit-Trajektorien
-- Determinismus wichtig für Validierung
-- Energieeffizienz bei Exascale-Berechnungen
+Molekulardynamik:
+    numerische Stabilität über extrem lange Zeitskalen
+
+KI-Training & Pretraining:
+    bitgenaue Trainingsläufe
+    auditierbare Modelle
+    stabile Parameterhistorien
+
+Big-Data-ETL:
+    deterministische Mustererkennung
+    exakte Pipeline-Wiederholung
+    vorhersehbare Laufzeiten
 
 ### 4.2 Ungeeignet für KORA
 
-**Interaktive Datenanalyse:**
-- Jupyter Notebooks, explorative Analyse
-- Benötigen schnelle Responsiveness und Interaktivität
+Nicht jeder Workload profitiert von KORA. Ungeeignet sind:
 
-**Transaktionale Datenbanken (OLTP):**
-- Viele kleine, asynchrone Anfragen
-- ACID-Transaktionen erfordern dynamisches Scheduling
+Interaktive Analyse-Workloads:
+    explorative Tools
+    Notebook-Umgebungen
+    dynamische Queries
 
-**Echtzeitstreaming:**
-- Kafka, Flink, Event-Processing
-- Externe Events müssen sofort verarbeitet werden
+Transaktionale Datenbanken:
+    OLTP
+    Event-getriebenes IO
 
-**Explorative ML-Forschung:**
-- Häufige Architekturänderungen, Debugging
-- Benötigt Unterbrechbarkeit während Training
+Streaming-Workloads:
+    spontane Ereignisse
+    variable Latenzen
+
+Explorative KI-Entwicklung:
+    häufige Codeveränderungen
+    hoher Interaktivitätsbedarf
+
+Diese Workloads profitieren stark von klassischer HPC-/GPU-Architektur.
 
 ---
 
-## 5. Entwicklungsroadmap
+## 5. Entwicklungsroadmap (aktualisiert)
 
-### Phase 1: Software-Framework (2025-2027)
+### Phase 1 (2025–2027): Softwarevalidierung
 
-**Ziel:** Validierung der Architekturprinzipien auf bestehender Hardware
+Ziele:
 
-**Maßnahmen:**
-- Implementierung KORA-Core als User-Space-Scheduler
-- Wrapper für GPUs/CPUs mit Queue-basierter Kommunikation
-- Benchmarking gegen Standard-Frameworks (MPI, CUDA, PyTorch)
+    deterministische KORA-Runtime für CPU/GPU
+    Scheduling Trees als deterministische Struktur
+    reproduzierbare Tensor- und Datenpipelines
+    Validierung durch Simulation v3.0
+    Überprüfung der Reproduzierbarkeit wissenschaftlicher Modelle
 
-**Erfolgskriterium:**
-- 15-25% messbare Verbesserung bei Laufzeit/Energie
-- Bit-identische Reproduzierbarkeit nachweisbar
-- Interesse von 3+ Forschungsinstituten
+Erwartete Ergebnisse:
 
-**Risiken:**
-- Software-Overhead kompensiert architektonische Vorteile nicht ausreichend
-- Adoption scheitert an Inkompatibilität mit bestehendem Code
+    15–30 % Performancevorteil
+    40–70 % Energieeinsparung
+    Eliminierung dynamischer NumPy/PyTorch-Jitter
 
-### Phase 2: Multi-Chip-Module (2027-2029)
+### Phase 2 (2027–2029): Multi-Chip-KORA
 
-**Ziel:** Brückentechnologie mit ersten Hardware-Optimierungen
+Ziele:
 
-**Maßnahmen:**
-- MCM mit 4-8 KORA-Tiles (Chiplet-Architektur)
-- Dedizierte Inter-Tile-Interconnects (kein Standard-PCIe)
-- Prototypen-Fertigung bei etablierten Foundries
+    4–16 deterministische Tiles
+    dedizierte Fabric ohne PCIe
+    deterministische DMA-Fenster
+    SRDB als Low-Level-Implementierung
+    deterministische Numerik-Profile A, B, C
 
-**Erfolgskriterium:**
-- 40-60% Verbesserung gegenüber Standard-Hardware
-- Technische Validierung für monolithischen Ansatz
-- Kooperationen mit Hardware-Herstellern
+Erwartete Ergebnisse:
 
-**Risiken:**
-- Chiplet-Overhead verhindert klare Vorteile gegenüber Software-Lösung
-- Entwicklungskosten (5-10 Mio €) nicht amortisierbar
+    2–3× Speedup gegenüber Phase 1
+    stabile Tile-Skalierung
+    wissenschaftliche Reproduzierbarkeit bei großen Modellen
 
-### Phase 3: Monolithische Hardware (2029-2033)
+### Phase 3 (2029–2033): Monolithischer KORA-Chip
 
-**Ziel:** Vollständig integrierter KORA-Chip für maximale Effizienz
+Ziele:
 
-**Maßnahmen:**
-- 2.500 mm² monolithischer Die mit 256+ Worker-Tiles
-- Integriertes SRDB mit HBM3-Interface
-- Wafer-Scale-Variante für Exascale-Anwendungen
+    256+ Compute-Tiles
+    integrierter SRDB
+    8 TB/s HBM
+    deterministische Fabric-Slots
+    keine Caches, kein Jitter, keine Overheads
 
-**Erfolgskriterium:**
-- 80-95% Energie-Einsparung gegenüber Standard-Systemen
-- Kommerzielle Deployments bei Hyperscalern/Forschungszentren
-- Amortisation über 2-3 Jahre bei Großanwendern
+Erwartete Ergebnisse:
 
-**Risiken:**
-- Entwicklungskosten (50-100 Mio €) zu hoch
-- Moore's Law-Ende verlangsamt sich, Hardware-Vorteile schwinden
-- Konkurrierende Technologien (fortgeschrittene Chiplets) holen auf
+    5–20× Speedup gegenüber Phase 1
+    97–99 % Energieeinsparung
+    bitgenaue Reproduzierbarkeit aller Modelle
+    neuartige wissenschaftliche Workflows
 
 ---
 
@@ -346,149 +418,178 @@ Leistung: 1,2 kW (-95%)
 
 ### 6.1 Total Cost of Ownership (TCO)
 
-**Beispiel: Forschungsinstitut mit 100 BERT-Trainings/Jahr**
+Moderne wissenschaftliche Rechenzentren stehen vor erheblichen Kostenproblemen:
 
-**Standard-System (8× A100 GPUs):**
-```
-Hardware: 80.000 € (Anschaffung)
-Strom: 23.700 € / Jahr (100× 237€)
-Kühlung: 9.500 € / Jahr (40% der Rechenleistung)
-Wartung: 5.000 € / Jahr
-────────────────────────────
-Jahr 1: 118.200 €
-Jahr 5: 271.000 € (kumulativ)
-```
+    hoher Stromverbrauch  
+    hohe Kühlkosten  
+    steigende Hardwarekomplexität  
+    wachsende Varianz der Laufzeiten  
+    unklare Kapazitätsplanung  
+    teure Wartung und Austauschzyklen  
+    sinkende Reproduzierbarkeit wissenschaftlicher Ergebnisse  
 
-**KORA-Software (gleiche Hardware, optimierte Nutzung):**
-```
-Hardware: 80.000 € (unverändert)
-Entwicklung: 10.000 € (einmalig, Open-Source-Integration)
-Strom: 20.200 € / Jahr (-15%)
-Kühlung: 8.100 € / Jahr
-Wartung: 5.000 € / Jahr
-────────────────────────────
-Jahr 1: 123.300 € (5.100 € teurer wegen Entwicklung)
-Jahr 5: 246.500 € (kumulativ, 24.500 € günstiger)
-```
+KORA adressiert alle strukturellen Kostenpunkte gleichzeitig, indem es Overheads nicht reduziert, sondern architekturell vollständig eliminiert.
 
-**KORA-Monolith (spezialisierte Hardware, ab 2030):**
-```
-Hardware: 150.000 € (höhere Anschaffung, aber amortisierbar)
-Strom: 900 € / Jahr (-96%)
-Kühlung: 360 € / Jahr
-Wartung: 3.000 € / Jahr
-────────────────────────────
-Jahr 1: 154.260 €
-Jahr 5: 171.300 € (kumulativ, 99.700 € günstiger als Standard)
-ROI: Nach 2,1 Jahren
-```
+#### Standard-HPC (Baseline)
 
-### 6.2 Break-Even-Analyse
+Kostenstruktur:
+    40–70 % Energieverlust durch Overhead
+    nicht reproduzierbare Läufe → mehrfache Berechnungen
+    hohe GPU-/CPU-Anschaffungskosten
+    skalierende Kühlkosten
+    HPC-Software-Stack extrem komplex
 
-**Hyperscaler-Scale (10.000 Trainings/Jahr):**
+Langfristige Probleme:
+    Exascale-Systeme verschärfen die Varianz
+    zunehmende FP-Inkonsistenzen
+    Cluster-Komplexität führt zu steigenden Fehlerraten
 
-Standard-System: 2,37 Mio € Strom/Jahr  
-KORA-Monolith: 90.000 € Strom/Jahr  
-**Einsparung: 2,28 Mio € / Jahr**
+#### KORA-SW
 
-Bei Entwicklungskosten von 50-70 Mio € für KORA-Hardware:
-**Break-Even nach 22-30 Monaten**
+KORA-SW (Architektur B) bietet bereits ohne neue Hardware deutliche TCO-Vorteile:
 
-### 6.3 Umweltbilanz
+    40–70 % Energieersparnis
+    1.3–2.6× schnellere Laufzeiten
+    ca. ±0.005–0.02 % Reproduzierbarkeit
+    deterministische ETL-Pipelines
+    geringere Infrastrukturkosten
+    weniger Wiederholungsberechnungen
 
-**CO₂-Einsparung pro BERT-Training (KORA-Monolith vs. Standard):**
-```
-Standard: 792 kWh × 0,4 kg CO₂/kWh (EU-Mix) = 317 kg CO₂
-KORA: 29 kWh × 0,4 kg CO₂/kWh = 12 kg CO₂
-Einsparung: 305 kg CO₂ pro Training
-```
+Kostenimplikationen:
+    geringere Last auf Kühlsystemen
+    weniger Bedarf an GPU-Zukäufen
+    stabilere Projektzeitplanung
+    weniger Debugging-Aufwand
 
-**Bei 10.000 Trainings/Jahr:** 3.050 Tonnen CO₂  
-**Äquivalent zu:** 13.000 Transatlantikflügen oder 1.500 Autos
+#### KORA-HW
+
+KORA-HW (Architektur C) hebt das Potential vollständig:
+
+    97–99 % Energieeinsparung
+    5–20× schneller als HPC
+    deterministische Rechenpfade → kein Zeitverlust durch Fehlerkorrektur
+    bitgenaue Ergebnisse → zuverlässige Forschung
+    sehr niedrige Betriebskosten
+
+Langfristig amortisiert sich ein KORA-System typischerweise innerhalb weniger Jahre:
+
+    geringere Stromkosten  
+    weniger Infrastrukturkosten  
+    geringe thermische Last  
+    keine teuren Cluster-Interconnects  
+
+KORA-HW verschiebt die Kostenstruktur der wissenschaftlichen Datenverarbeitung radikal.
+
+### 6.2 Umweltbilanz
+
+Wissenschaftliche Langläufer erzeugen erhebliche CO₂-Emissionen. 
+Ein einzelnes KI-Pretraining (z.B. GPT- oder BERT-Klasse) kann zwischen 50 und 350 kg CO₂ erzeugen, 
+abhängig von Hardware, Rechenzentrumseffizienz und Wiederholungsberechnungen.
+
+Beispiel BERT-Large (aus v3.0 Simulation):
+
+Standard-HPC:
+    794.64 kWh  
+    entspricht ca. 317 kg CO₂ (bei 0.4 kg/kWh)  
+
+KORA-HW:
+    19.45 kWh  
+    entspricht ca. 12 kg CO₂  
+
+Ersparnis:
+    305 kg CO₂ pro Training  
+
+Bei regelmäßigen Trainingsläufen, Entwicklungen, Validierungsruns oder Modellsweeps ergibt das pro Jahr 
+mehrere Tonnen CO₂, die eingespart werden können.
+
+KORA macht wissenschaftliches Rechnen ökologisch tragfähig.
 
 ---
 
-## 7. Risiken und Herausforderungen
+## 7 Risiken und Herausforderungen
+
+KORA ist eine radikale Neuerfindung wissenschaftlicher Rechenarchitektur. Das bedeutet, dass es neben 
+starken Vorteilen auch potenzielle Herausforderungen gibt.
 
 ### 7.1 Technische Risiken
 
-**Yield-Problem bei großen Dies:**
-- Monolithische 2.500 mm²-Dies haben niedrigere Ausbeute als kleinere Chips
-- **Mitigation:** Redundante Worker-Tiles (256+16, 16 als Reserve)
-
-**Thermische Herausforderungen:**
-- Konzentrierte Wärme auf einem Die
-- **Mitigation:** KORA läuft mit konstanter Last → gleichmäßige Wärmeverteilung, effizientere Kühlung
-
-**Speicher-Bandbreite:**
-- 256 Worker benötigen enormen Datendurchsatz
-- **Mitigation:** HBM3 mit 8 TB/s ausreichend für KORA-Zugriffsmuster
+    große Dies → Yield-Risiko
+    thermisches Management bei hoher Leistungsdichte
+    Integration von SRDB und deterministischen Fabric-Slots
+    Entwicklung deterministischer Tile-Mikroarchitektur
+    Validierung von TSF-Dateien über Generationen
 
 ### 7.2 Ökonomische Risiken
 
-**Hohe Entwicklungskosten:**
-- ASIC-Design + Tape-Out: 50-100 Mio €
-- **Mitigation:** Phase 1+2 validieren Konzept vor großer Investition
+    hoher initialer Entwicklungsaufwand
+    benötigt neues Ökosystem: Compiler, Runtime, Libraries
+    Marktpenetration dauert Zeit
+    Gefahr durch konkurrierende Chiplet-basierte Ansätze
 
-**Adoption-Barriere:**
-- Ökosystem (Compiler, Tools, Bibliotheken) fehlt
-- **Mitigation:** Open-Source-Strategie, Kompatibilitäts-Layer für bestehenden Code
+### 7.3 Wissenschaftliche Risiken
 
-**Konkurrierende Technologien:**
-- Chiplets könnten ähnliche Vorteile bei niedrigerem Risiko bieten
-- **Mitigation:** KORA fokussiert auf Kohärenz-Nische, wo Chiplets strukturell unterlegen sind
+    Übergang von HPC-Clustern zu deterministischer Architektur erfordert Umdenken
+    klassische Parallelisierungsparadigmen sind nicht 1:1 übertragbar
+    Tooling muss angepasst werden
+    manche Workloads verlieren kurzfristig Flexibilität
 
-### 7.3 Markt-Risiken
-
-**Energiekosten steigen nicht wie projiziert:**
-- Wenn Strom <0,30 €/kWh bleibt, verlängert sich Amortisation
-- **Mitigation:** Auch ohne Energiekrise ist Reproduzierbarkeit wertvoll
-
-**KI-Hype endet:**
-- Weniger große Trainings → kleinerer Markt
-- **Mitigation:** KORA ist für wissenschaftliches Computing (unabhängig von KI-Trends) konzipiert
-
-**Regulierung erfolgt nicht:**
-- Ohne Effizienz-Standards bleibt Status Quo attraktiv
-- **Mitigation:** Wissenschaftliche Community (Helmholtz, DLR) hat intrinsische Motivation unabhängig von Regulierung
+Trotz dieser Risiken ist der wissenschaftliche Nutzen außergewöhnlich hoch – insbesondere in den Bereichen KI, CFD, Klima, Medizin und Big-Data.
 
 ---
 
 ## 8. Zusammenfassung und Ausblick
 
-### 8.1 Kernaussagen
+### 8.1 Kernaussagen Version 2.0
 
-1. **KORA adressiert reale Ineffizienzen** moderner Big-Data-Systeme durch Rückkehr zu fundamentalen Prinzipien (Batch, Determinismus, Kohärenz)
+KORA eliminiert die strukturellen Overheads heutiger HPC- und Big-Data-Systeme vollständig:
 
-2. **Software-Optimierung allein** bringt 15-28% Verbesserung bei Laufzeit und Energie – ohne neue Hardware
+    Kommunikation → eliminiert  
+    Synchronisation → eliminiert  
+    Scheduling-Jitter → eliminiert  
+    Cache-Kohärenz → eliminiert  
+    FP-Variabilität → eliminiert  
+    Netzwerkkomplexität → eliminiert  
 
-3. **Spezialisierte Hardware** ermöglicht 80-96% Einsparungen durch Elimination struktureller Overheads (Inter-Chip-Kommunikation, Cache-Kohärenz)
+KORA-SW (Architektur B):
+    40–70 % Energieeinsparung  
+    1.3–2.6× Speedup  
+    deterministische Pipelines  
 
-4. **Reproduzierbarkeit** wird von "best effort" zu "garantiert" – kritisch für Wissenschaft und regulierte Domänen
+KORA-HW (Architektur C):
+    97–99 % Energieeinsparung  
+    5–20× Speedup  
+    perfekte Reproduzierbarkeit  
 
-5. **KORA ist keine Universal-Lösung**, sondern Spezialwerkzeug für kohärenz-dominierte Langläufer
+Wissenschaftliche Validität steigt drastisch.  
+Debugging wird möglich.  
+Modelle werden auditierbar und nachvollziehbar.  
+Energie wird erstmals effizient genutzt.
 
-### 8.2 Zeitliche Relevanz
+### 8.2 Bedeutung für 2030+
 
-**Kurzfristig (2025-2027):**
-- Software-Framework validiert Konzept
-- Erste Adoptionen in wissenschaftlichen Instituten
+Mit KORA entstehen neue wissenschaftliche Möglichkeiten:
 
-**Mittelfristig (2028-2032):**
-- Energiekosten, KI-Volumen und Moore's Law-Ende machen KORA ökonomisch zwingend
-- Erste monolithische Hardware-Deployments
+    präzisere Klimamodelle über Jahre hinweg  
+    auditierbare KI-Systeme mit bitgenauer Reproduzierbarkeit  
+    hochstabile Turbulenz- und CFD-Berechnungen  
+    deterministische Big-Data-Pipelines  
+    verbesserte medizinische Diagnostik durch stabile Modelle  
+    drastisch niedrigere CO₂-Emissionen  
+    wissenschaftlich verlässliche Hypermodellierung  
 
-**Langfristig (2033+):**
-- KORA als Standard für Big-Data-Langläufer etabliert
-- Wafer-Scale-Integration für Exascale-Anwendungen
+KORA ist keine Optimierung bestehender HPC-Architekturen.  
+Es ist eine neue Klasse wissenschaftlicher Rechner:  
+kohärenzorientiert, deterministisch, effizient und langfristig reproduzierbar.
 
 ---
 
-KORA ist als **Open-Science-Projekt** konzipiert. Die Grundidee, Simulationen und Spezifikationen sind frei verfügbar unter CC-BY-SA 4.0.
+## Versionierung
 
----
+- **Dokument:** `01_Executive_Summary.md`  
+- **Version:** **2.0**  
+- **Simulationsmodell:** **M3.0**  
+- **Veröffentlichung:** November 2025  
+- **Code-Repository:** https://github.com/adamsfke/kora  
+- **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
+- **Kontakt:** mailto:adamsfke@proton.me  
 
-**Dieses Dokument ist Teil des KORA-Projekts**  
-**Lizenz:** CC-BY-SA 4.0  
-**Vollständige Dokumentation:** https://osf.io/8wyec  
-**Kontakt:** adamsfke@proton.me**Letzte Aktualisierung:** November 2025
