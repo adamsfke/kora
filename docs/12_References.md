@@ -2,8 +2,8 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0
-**Dokumenttyp:** Literaturverzeichnis
+**Lizenz:** CC-BY-SA 4.0  
+**Dokumenttyp:** Literaturverzeichnis  
 **Status:** Konzeptphase
 
 Dieses Dokument enthält alle wissenschaftlichen Quellen, die als Basis für:
@@ -194,3 +194,4 @@ Interne Projektdokumente 01–10.
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
+
