@@ -2,8 +2,8 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0
-**Dokumenttyp:** Offizielle KORA-v2.0 Benchmark- und Evaluationsspezifikation
+**Lizenz:** CC-BY-SA 4.0  
+**Dokumenttyp:** Offizielle KORA-v2.0 Benchmark- und Evaluationsspezifikation  
 **Status:** Konzeptphase
 
 ---
@@ -681,3 +681,4 @@ und bildet die offizielle Grundlage aller KORA-v3.0 Benchmarkzahlen.
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
+
