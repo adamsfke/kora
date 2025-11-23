@@ -2,41 +2,42 @@
 
 ## KORA-Projekt Lizenz
 
-**Werk:** KORA – Kohärenzorientierte Rechenarchitektur für Big-Data-Langläufer  
+**Werk:** KORA – Kohärenzorientierte Rechenarchitektur für Langläufer  
 **Autoren:** Frank Meyer  
-**Version:** 1.0 (November 2025)  
+**Version:** 2.0 (November 2025)  
 **Lizenz-URL:** https://creativecommons.org/licenses/by-sa/4.0/legalcode
-
----
 
 Dies ist eine menschenlesbare Zusammenfassung der Lizenz (nicht deren Ersatz).
 
 ## Sie dürfen:
 
 ### Teilen
+
 Das Material in jedwedem Format oder Medium vervielfältigen und weiterverbreiten für beliebige Zwecke, auch kommerziell.
 
 ### Bearbeiten
+
 Das Material remixen, verändern und darauf aufbauen für beliebige Zwecke, auch kommerziell.
 
 **Der Lizenzgeber kann diese Freiheiten nicht widerrufen, solange Sie sich an die Lizenzbedingungen halten.**
 
----
 
 ## Unter folgenden Bedingungen:
 
 ### Namensnennung (Attribution)
+
 Sie müssen angemessene Urheber- und Rechteangaben machen, einen Link zur Lizenz beifügen und angeben, ob Änderungen vorgenommen wurden. Diese Angaben dürfen in jeder angemessenen Art und Weise gemacht werden, allerdings nicht so, dass der Eindruck entsteht, der Lizenzgeber unterstütze gerade Sie oder Ihre Nutzung besonders.
 
 **Empfohlene Zitierung:**
 ```
 Meyer, F. (2025). KORA – Kohärenzorientierte Rechenarchitektur 
-für Big-Data-Langläufer. Open Science Framework. 
+Open Science Framework. 
 https://osf.io/8wyec
 Lizenz: CC-BY-SA 4.0
 ```
 
 ### Weitergabe unter gleichen Bedingungen (ShareAlike)
+
 Wenn Sie das Material remixen, verändern oder anderweitig direkt darauf aufbauen, dürfen Sie Ihre Beiträge nur unter derselben Lizenz wie das Original verbreiten.
 
 **Das bedeutet:**
@@ -45,9 +46,9 @@ Wenn Sie das Material remixen, verändern oder anderweitig direkt darauf aufbaue
 - Open-Source bleibt Open-Source
 
 ### Keine weiteren Einschränkungen
+
 Sie dürfen keine zusätzlichen Klauseln oder technische Verfahren einsetzen, die anderen rechtlich irgendetwas untersagen, was die Lizenz erlaubt.
 
----
 
 ## Hinweise:
 
@@ -55,14 +56,12 @@ Sie müssen sich nicht an diese Lizenz halten hinsichtlich solcher Teile des Mat
 
 Es werden keine Garantien gegeben und auch keine Gewähr geleistet. Die Lizenz verschafft Ihnen möglicherweise nicht alle Erlaubnisse, die Sie für die jeweilige Nutzung brauchen. Es können beispielsweise andere Rechte wie Persönlichkeits- und Datenschutzrechte zu beachten sein, die Ihre Nutzung des Materials entsprechend beschränken.
 
----
 
 ## Vollständiger Lizenztext
 
 Der vollständige rechtsgültige Lizenztext ist verfügbar unter:  
 **https://creativecommons.org/licenses/by-sa/4.0/legalcode.de**
 
----
 
 ## Zusätzliche Hinweise für das KORA-Projekt
 
@@ -97,12 +96,12 @@ SOFTWARE.
 
 **Hinweis:** Bei Konflikten zwischen CC-BY-SA 4.0 und MIT gilt CC-BY-SA 4.0 für Dokumentation, MIT für Code.
 
-### Hardware-Designs
+### Hardware-Designs (falls entwickelt)
 
 Falls Hardware-Designs (z.B. Verilog/VHDL, Chip-Layouts) entwickelt werden:
 
-**CERN Open Hardware Licence Version 2 - Strongly Reciprocal (CERN-OHL-S-2.0)**  
-
+**Empfohlen:** CERN Open Hardware Licence Version 2 - Strongly Reciprocal (CERN-OHL-S-2.0)  
+**Alternativ:** CC-BY-SA 4.0 (kompatibel, aber weniger Hardware-spezifisch)
 
 Dokumentation unter: https://ohwr.org/cern_ohl_s_v2.txt
 
@@ -121,7 +120,7 @@ Die Autoren erklären hiermit:
 "KORA" als Projektname:
 - Aktuell keine Markenanmeldung
 - Frei nutzbar für nicht-kommerzielle und akademische Zwecke
-- Bei kommerzieller Nutzung: Bitte informieren Sie die Autoren
+- Bei kommerzieller Nutzung: Bitte informieren Sie die Autoren (höfliche Bitte, keine rechtliche Anforderung)
 
 ### Kommerzielle Nutzung
 
@@ -193,22 +192,10 @@ Falls Sie Fehler oder Verbesserungsvorschläge haben:
 
 ### Versionierung
 
-Diese Lizenz gilt für **Version 1.0** des KORA-Projekts (November 2025).
+Diese Lizenz gilt für **Version 2.0** und **Simulationsmodell: M3.0** des KORA-Projekts (November 2025).
 
 Zukünftige Versionen können unter derselben oder einer kompatiblen Lizenz veröffentlicht werden. Bereits veröffentlichte Versionen bleiben unter ihrer ursprünglichen Lizenz verfügbar (Unwiderruflichkeit von Creative Commons).
 
-### Kontakt und Fragen
-
-**Für Lizenz-Fragen:**  
-Kontaktieren Sie die Autoren über das OSF-Projekt oder per Issue-Tracker.
-
-**Für technische Fragen:**  
-Siehe README.md im Projekt-Repository.
-
-**Für Kooperationsanfragen:**  
-Siehe README.md, Abschnitt "Kontakt und Kooperation".
-
----
 
 ## Zusammenfassung der Rechte und Pflichten
 
@@ -222,10 +209,18 @@ Siehe README.md, Abschnitt "Kontakt und Kooperation".
 
 ---
 
-**Stand:** November 2025  
-**Letzte Änderung:** Initiale Veröffentlichung  
-**Lizenz-Version:** CC-BY-SA 4.0 International  
-
 **Diese Lizenz ist verbindlich für alle Teile des KORA-Projekts, soweit nicht anders angegeben.**
 
-Vielen Dank, dass Sie zur Open-Science-Community beitragen! 🚀
+Vielen Dank, dass Sie zur Open-Science-Community beitragen!
+
+---
+
+## Versionierung
+
+- **Dokument:** `LICENSE`  
+- **Version:** **2.0**  
+- **Simulationsmodell:** **M3.0**  
+- **Veröffentlichung:** November 2025  
+- **Code-Repository:** https://github.com/adamsfke/kora  
+- **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
+- **Kontakt:** mailto:adamsfke@proton.me  
