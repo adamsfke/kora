@@ -146,11 +146,11 @@ Das folgende Diagramm verdeutlicht das klassische HPC-Problem.
     │   Barriers, Reductions   │
     └──────────────────────────┘
 
-    Ergebnis:
-    - Daten werden fragmentiert
-    - Kommunikation überlastet
-    - Rechenzeit wird zu Wartezeit
-    - Ergebnisse variieren
+Ergebnis:
+- Daten werden fragmentiert
+- Kommunikation überlastet
+- Rechenzeit wird zu Wartezeit
+- Ergebnisse variieren
 
 Die Architektur ist nicht harmonisch – sie ist eine *Koordination von Inseln*.
 
@@ -694,20 +694,20 @@ Die Simulationsergebnisse bilden die Grundlage für die Bewertung von Reproduzie
     CFD Large          100 %       ~32 %        ~0.9 %
 
 
-    Kernaussage:
-    Architektur C verschiebt Energieverbrauch aus der
-    Kategorie „Bottleneck & Overhead" → in tatsächliche Rechenarbeit.
+Kernaussage:
+Architektur C verschiebt Energieverbrauch aus der
+Kategorie „Bottleneck & Overhead" → in tatsächliche Rechenarbeit.
 
 ---
 
 ## 23. Simulation v3.0 – Vollständige Tabelle  
 *(alle Zeiten in Stunden, alle Energien in kWh)*
 
-|Workload | Arch | Zeit_eff [h] | Energie_eff [kWh] | Speedup |  Energie-Ersparnis |
-| | | | | | |
-| BERT-Large | A   | 92.400        | 794.64            | 1.00×    | 0 % |
-| BERT-Large | B   | 53.294        | 367.73            | 1.73×    | 53.7 % |
-| BERT-Large | C   | 16.211        | 19.45             | 5.70×    | 97.6 % |
+|Workload | Arch | Zeit_eff [h] | Energie_eff [kWh] | Speedup | Energie-Ersparnis |
+|-----|-----|-----|-----|-----|-----|
+| BERT-Large | A | 92.400        | 794.64            | 1.00×    | 0 % |
+| BERT-Large | B | 53.294        | 367.73            | 1.73×    | 53.7 % |
+| BERT-Large | C | 16.211        | 19.45             | 5.70×    | 97.6 % |
 | | | | | | |
 | Big-Data Small | A | 0.024       | 0.210             | 1.00×    | 0 % |
 | Big-Data Small | B | 0.018       | 0.125             | 1.35×    | 40.5 % |

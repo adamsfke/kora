@@ -1364,7 +1364,9 @@ vollständige Hardwarekontrolle erklärbar sind.
 
 Deshalb verwendet KORA pro Workload einen empirisch kalibrierten Faktor **S_W** :
 
-    S_W = \frac{T_{real}}{T_{raw}}.
+$$
+S_W = \frac{T_{real}}{T_{raw}}.
+$$
 
 Diese Faktoren sorgen dafür, dass Architektur A **realistisch** bleibt.
 Damit wird jeder Architekturvergleich fair, wissenschaftlich belastbar
@@ -2376,18 +2378,22 @@ keine Pipeline-Stalls.
 
 ### 13.4 Arbitration-Regeln (formal)
 
-Ein Speicherzugriff eines Tiles \( T_i \) auf Bank \( B_j \) ist gültig, wenn:
+Ein Speicherzugriff eines Tiles $\( T_i \)$ auf Bank $\( B_j \)$ ist gültig, wenn:
 
 1. **Zugriff im korrekten Tile-Zeitfenster:** 
+
 $$
 t \in W_{tile}(T_i)
 $$
 
 2. **Zugriff im korrekten Bank-Zeitfenster:**
+
 $$
 t \in W_{bank}(B_j)
 $$
+
 3. **Zugriff entspricht der statischen Mapping-Tabelle:**
+
 $$
 map(T_i) = B_j
 $$
@@ -2396,6 +2402,7 @@ $$
    (durch Rule 3 strukturell ausgeschlossen)
 
 5. **DMA-Zeitslots passen in globale TDM-Fabric:**
+
 $$
 slot(DT_k) = W_{dt}(T_i)
 $$
@@ -2598,6 +2605,7 @@ Nie passiert:
 Sei **$\( P_{i \rightarrow j} \)$** der Pfad von Tile **$\( i \)$** zu Einheit **$\( j \)$**.
 
 Dann gilt:
+
 $$
 P_{i \rightarrow j}(t) = P_{i \rightarrow j}(0) \quad \forall t
 $$
@@ -2925,9 +2933,11 @@ Der SRDB garantiert:
 - vollständige Reproduzierbarkeit
 
 Formal:
+
 $$
 f_{exec}(input) = output
 $$
+
 $$
 \forall\, runs: f_{exec}^{(1)} = f_{exec}^{(2)} = \cdots
 $$
@@ -3146,6 +3156,7 @@ Die Zeit wird in **Scheduling Periods (SP)** geteilt:
 $$
 SP = \{sp_1, sp_2, ..., sp_N\}
 $$
+
 Jede Period enthält:
 
 - Compute-Fenster  
@@ -3639,7 +3650,7 @@ Der Monolith erzeugt daraus:
 - eine Partitionierung $\( P \)$ über die Tiles  
 - einen globalen Scheduling Tree $\( GT \)$  
 - regionale Bäume $\( RT_i \)$  
-- lokale Bäume $( LT_{ij} \)$
+- lokale Bäume $\( LT_{ij} \)$
 
 Der Ausführungsablauf wird zu einer Funktion:
 
