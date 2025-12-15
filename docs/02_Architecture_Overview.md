@@ -703,8 +703,8 @@ Die Simulationsergebnisse bilden die Grundlage für die Bewertung von Reproduzie
 ## 23. Simulation v3.0 – Vollständige Tabelle  
 *(alle Zeiten in Stunden, alle Energien in kWh)*
 
-|Workload | Arch | Zeit_eff [h] | Energie_eff [kWh] | Speedup |  Energie-Ersparnis |
-| | | | | | |
+|Workload |Arch | Zeit_eff [h] | Energie_eff [kWh] | Speedup |  Energie-Ersparnis |
+|-----|-----|-----|-----|-----|-----|
 | BERT-Large | A   | 92.400        | 794.64            | 1.00×    | 0 % |
 | BERT-Large | B   | 53.294        | 367.73            | 1.73×    | 53.7 % |
 | BERT-Large | C   | 16.211        | 19.45             | 5.70×    | 97.6 % |
@@ -840,3 +840,4 @@ und definiert damit die Grundlage für die nächste Generation wissenschaftliche
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
+
