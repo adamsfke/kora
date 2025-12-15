@@ -2,8 +2,8 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0  
-**Dokumenttyp:** API-Referenz  
+**Lizenz:** CC-BY-SA 4.0
+**Dokumenttyp:** API-Referenz
 **Status:** Konzeptphase
 
 ---
@@ -976,4 +976,3 @@ Dieses Modul schließt die softwareseitige Definition der KORA v2.0 Architektur 
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
-

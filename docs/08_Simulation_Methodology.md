@@ -2,9 +2,9 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0  
-**Dokumenttyp:** Methodologie und Code-Dokumentation  
-**Status:** Konzeptphase
+**Lizenz:** CC-BY-SA 4.0
+**Dokumenttyp:** Methodologie und Code-Dokumentation
+**Status:** Machbarkeitsstudie / Konzeptphase
 
 ---
 
@@ -704,4 +704,3 @@ Sie bildet den Rahmen für zukünftige Forschung, Implementierung und Hardwareen
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
-

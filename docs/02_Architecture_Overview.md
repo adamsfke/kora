@@ -2,8 +2,8 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0  
-**Dokumenttyp:** Architekturdefinition  
+**Lizenz:** CC-BY-SA 4.0
+**Dokumenttyp:** Architekturdefinition 
 **Status:** Konzeptphase
 
 ---
@@ -703,27 +703,27 @@ Die Simulationsergebnisse bilden die Grundlage für die Bewertung von Reproduzie
 ## 23. Simulation v3.0 – Vollständige Tabelle  
 *(alle Zeiten in Stunden, alle Energien in kWh)*
 
-| Workload | Arch | Zeit_eff [h] | Energie_eff [kWh] | Speedup | Energie-Ersparnis |
-|---------|:----:|--------------:|-----------------:|--------:|-------------------:|
-| BERT-Large | A   | 92.400 | 794.640| 1.00×    | 0.0 % |
-| BERT-Large | B   | 53.294 | 367.730| 1.73×    | 53.7 % |
-| BERT-Large | C   | 16.211 | 19.450| 5.70×    | 97.6 % |
+|Workload | Arch | Zeit_eff [h] | Energie_eff [kWh] | Speedup |  Energie-Ersparnis |
 | | | | | | |
-| Big-Data Small | A | 0.024| 0.210| 1.00×    | 0.0 % |
-| Big-Data Small | B | 0.018| 0.125| 1.35×    | 40.5 % |
-| Big-Data Small | C | 0.013| 0.015| 1.93×    | 92.8 % |
+| BERT-Large | A   | 92.400        | 794.64            | 1.00×    | 0 % |
+| BERT-Large | B   | 53.294        | 367.73            | 1.73×    | 53.7 % |
+| BERT-Large | C   | 16.211        | 19.45             | 5.70×    | 97.6 % |
 | | | | | | |
-| Big-Data Large | A | 0.550| 4.730| 1.00×    | 0.0 % |
-| Big-Data Large | B | 0.262| 1.810| 2.10×    | 61.7 % |
-| Big-Data Large | C | 0.099| 0.120| 5.53×    | 97.5 % |
+| Big-Data Small | A | 0.024       | 0.210             | 1.00×    | 0 % |
+| Big-Data Small | B | 0.018       | 0.125             | 1.35×    | 40.5 % |
+| Big-Data Small | C | 0.013       | 0.015             | 1.93×    | 92.8 % |
 | | | | | | |
-| CFD Medium (2h) | A | 2.200| 18.920| 1.00×    | 0.0 % |
-| CFD Medium (2h) | B | 0.840| 5.790| 2.62×    | 69.4 % |
-| CFD Medium (2h) | C | 0.114| 0.140| 19.31×   | 99.3 % |
+| Big-Data Large | A | 0.550       | 4.730             | 1.00×    | 0 % |
+| Big-Data Large | B | 0.262       | 1.810             | 2.10×    | 61.7 % |
+| Big-Data Large | C | 0.099       | 0.120             | 5.53×    | 97.5 % |
 | | | | | | |
-| CFD Large (24h) | A | 26.400| 227.040| 1.00×    | 0.0 % |
-| CFD Large (24h) | B | 10.585| 73.030| 2.49×    | 67.8 % |
-| CFD Large (24h) | C | 1.725| 2.070| 15.30×   | 99.1 % |
+| CFD Medium (2h) | A | 2.200      | 18.92             | 1.00×    | 0 % |
+| CFD Medium (2h) | B | 0.840      | 5.79              | 2.62×    | 69.4 % |
+| CFD Medium (2h) | C | 0.114      | 0.14              | 19.31×   | 99.3 % |
+| | | | | | |
+| CFD Large (24h) | A | 26.400     | 227.04            | 1.00×    | 0 % |
+| CFD Large (24h) | B | 10.585     | 73.03             | 2.49×    | 67.8 % |
+| CFD Large (24h) | C | 1.725      | 2.07              | 15.30×   | 99.1 % |
 
 ---
 
@@ -840,5 +840,3 @@ und definiert damit die Grundlage für die nächste Generation wissenschaftliche
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
-
-

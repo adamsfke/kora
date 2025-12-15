@@ -2,8 +2,8 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0  
-**Dokumenttyp:** Offizielle Versionsbeschreibung für OSF  
+**Lizenz:** CC-BY-SA 4.0
+**Dokumenttyp:** Offizielle Versionsbeschreibung für OSF
 **Status:** Konzeptphase
 
 ---
@@ -243,4 +243,3 @@ KORA Version 2.0 ist damit vollständig definiert, nachvollziehbar dokumentiert 
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
-

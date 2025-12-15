@@ -4,7 +4,7 @@
     KORA Architektur-Übersicht
   </text>
   <text x="400" y="55" text-anchor="middle" font-size="14" fill="#7f8c8d">
-    Kohärenzorientierte Rechenarchitektur für Big-Data-Langläufer
+    Kohärenzorientierte Rechenarchitektur
   </text>
   
   <!-- KORA-Net-Layer -->
@@ -147,6 +147,6 @@
   
   <!-- Footer -->
   <text x="400" y="895" text-anchor="middle" font-size="10" fill="#95a5a6">
-    KORA Project • Frank Meyer &amp; Claude • CC-BY-SA 4.0 • Version 1.0 (2025)
+    KORA Project • Frank Meyer • CC-BY-SA 4.0 • Version 2.0 (2025)
   </text>
 </svg>

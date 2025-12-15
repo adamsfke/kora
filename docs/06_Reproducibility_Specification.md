@@ -2,8 +2,8 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0  
-**Dokumenttyp:** Wissenschaftliche Spezifikation – deterministische Reproduzierbarkeit in KORA  
+**Lizenz:** CC-BY-SA 4.0
+**Dokumenttyp:** Wissenschaftliche Spezifikation – deterministische Reproduzierbarkeit in KORA
 **Status:** Konzeptphase
 
 ---
@@ -927,4 +927,3 @@ State Drift
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
-

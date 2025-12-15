@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 900" style="background: white;">
+  <defs>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#34495e"/>
+    </marker>
+  </defs>
+
+  <!-- Titel -->
+  <text x="400" y="40" text-anchor="middle" font-size="24" font-weight="bold" fill="#2c3e50">
+    KORA-3 – Hardware-Architektur (Monolith)
+  </text>
+  <text x="400" y="65" text-anchor="middle" font-size="14" fill="#7f8c8d">
+    SRDB, Compute-Tiles, Memorybanks, Control • Data • Telemetry Plane
+  </text>
+
+  <!-- Host-/Umwelt-Ebene -->
+  <rect x="80" y="100" width="640" height="90" fill="#2980b9" stroke="#2471a3" stroke-width="2" rx="8"/>
+  <text x="400" y="135" text-anchor="middle" font-size="20" font-weight="bold" fill="white">
+    Host-Systeme &amp; Außenwelt
+  </text>
+  <text x="400" y="165" text-anchor="middle" font-size="12" fill="white">
+    Bereitstellung von TSF, I/O-Blöcken, Steuerbefehlen (Start/Stop/Replay)
+  </text>
+
+  <!-- Pfeil Host → Monolith -->
+  <path d="M 400 190 L 400 230" stroke="#34495e" stroke-width="3"
+        fill="none" marker-end="url(#arrowhead)"/>
+  <text x="420" y="215" font-size="11" fill="#34495e">TSF / Input</text>
+
+  <!-- Monolith-Container -->
+  <rect x="60" y="230" width="680" height="520" fill="#27ae60" stroke="#1e8449" stroke-width="2" rx="12"/>
+  <text x="400" y="260" text-anchor="middle" font-size="20" font-weight="bold" fill="white">
+    Monolith – deterministischer Rechenkörper
+  </text>
+  <text x="400" y="285" text-anchor="middle" font-size="12" fill="white">
+    Keine Caches • keine Interrupts • keine Threads • keine OS-Variabilität
+  </text>
+
+  <!-- SRDB -->
+  <rect x="100" y="310" width="600" height="90" fill="#2ecc71" stroke="#27ae60" stroke-width="2" rx="8"/>
+  <text x="400" y="345" text-anchor="middle" font-size="18" font-weight="bold" fill="white">
+    SRDB – Single Resonant Data Bus
+  </text>
+  <text x="400" y="370" text-anchor="middle" font-size="12" fill="white">
+    globaler, kohärenter Speicherraum mit festen Pfaden und statischer Latenz
+  </text>
+
+  <!-- Compute Tiles -->
+  <rect x="100" y="425" width="250" height="110" fill="#16a085" stroke="#117865" stroke-width="2" rx="8"/>
+  <text x="225" y="460" text-anchor="middle" font-size="18" font-weight="bold" fill="white">
+    Compute-Tiles
+  </text>
+  <text x="225" y="485" text-anchor="middle" font-size="12" fill="white">
+    deterministische FP-Pipelines •
+  </text>
+  <text x="225" y="505" text-anchor="middle" font-size="12" fill="white">
+    phasenbasierte Ausführung (TSF)
+  </text>
+
+  <!-- Memorybanks -->
+  <rect x="450" y="425" width="250" height="110" fill="#1abc9c" stroke="#148f77" stroke-width="2" rx="8"/>
+  <text x="575" y="460" text-anchor="middle" font-size="18" font-weight="bold" fill="white">
+    Memorybanks
+  </text>
+  <text x="575" y="485" text-anchor="middle" font-size="12" fill="white">
+    feste Latenzen • statische Bank-Zuordnung
+  </text>
+  <text x="575" y="505" text-anchor="middle" font-size="12" fill="white">
+    keine Cache-Layer
+  </text>
+
+  <!-- SRDB Verbindungen -->
+  <path d="M 400 400 L 225 425" stroke="#ecf0f1" stroke-width="2"/>
+  <path d="M 400 400 L 575 425" stroke="#ecf0f1" stroke-width="2"/>
+
+  <!-- Subsysteme unten -->
+  <rect x="100" y="560" width="180" height="140" fill="#8e44ad" stroke="#7d3c98" stroke-width="2" rx="8"/>
+  <text x="190" y="600" text-anchor="middle" font-size="18" font-weight="bold" fill="white">
+    Control Plane
+  </text>
+  <text x="190" y="625" text-anchor="middle" font-size="12" fill="white">
+    TSF-Verifikation
+  </text>
+  <text x="190" y="645" text-anchor="middle" font-size="12" fill="white">
+    Run-Koordination
+  </text>
+
+  <rect x="310" y="560" width="180" height="140" fill="#9b59b6" stroke="#8e44ad" stroke-width="2" rx="8"/>
+  <text x="400" y="600" text-anchor="middle" font-size="18" font-weight="bold" fill="white">
+    Data Plane
+  </text>
+  <text x="400" y="625" text-anchor="middle" font-size="12" fill="white">
+    deterministische DMA-Fenster
+  </text>
+  <text x="400" y="645" text-anchor="middle" font-size="12" fill="white">
+    TSF-I/O-Blöcke
+  </text>
+
+  <rect x="520" y="560" width="180" height="140" fill="#34495e" stroke="#2c3e50" stroke-width="2" rx="8"/>
+  <text x="610" y="600" text-anchor="middle" font-size="18" font-weight="bold" fill="white">
+    Telemetry Plane
+  </text>
+  <text x="610" y="625" text-anchor="middle" font-size="12" fill="white">
+    Zeit • Energie • Temperatur
+  </text>
+  <text x="610" y="645" text-anchor="middle" font-size="12" fill="white">
+    Stabilität • Fehlercodes
+  </text>
+
+  <!-- Pfeile im Monolith -->
+  <path d="M 225 535 L 225 560" stroke="#ecf0f1" stroke-width="2" stroke-dasharray="6 4"/>
+  <path d="M 575 535 L 575 560" stroke="#ecf0f1" stroke-width="2" stroke-dasharray="6 4"/>
+
+  <!-- Monolith → Host -->
+  <path d="M 400 750 L 400 790" stroke="#34495e" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="430" y="780" font-size="11" fill="#34495e">
+    Output-Blöcke &amp; Telemetrie
+  </text>
+
+  <!-- Legende -->
+  <rect x="80" y="820" width="20" height="14" fill="#27ae60" stroke="#1e8449" stroke-width="1.5" rx="3"/>
+  <text x="110" y="831" font-size="11" fill="#34495e">
+    Monolith (KORA-3 Profil C)
+  </text>
+
+  <rect x="300" y="820" width="20" height="14" fill="#2ecc71" stroke="#27ae60" stroke-width="1.5" rx="3"/>
+  <text x="330" y="831" font-size="11" fill="#34495e">
+    SRDB – globaler Speicherbus
+  </text>
+
+  <path d="M 530 827 L 560 827" stroke="#34495e" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="590" y="831" font-size="11" fill="#34495e">
+    deterministischer Datenfluss
+  </text>
+</svg>

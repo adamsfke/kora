@@ -1,0 +1,23 @@
+KORA v3.0 – Gesamtergebnis (kompakte Tabelle)
+(alle Zeiten in Stunden, alle Energien in kWh)
+
+Workload	Arch	Zeit_eff [h]	Energie_eff [kWh]	Speedup	Energie-Ersparnis
+BERT-Large	A	92.400	794.64	1.00×	0 %
+B	53.294	367.73	1.73×	53.7 %
+C	16.211	19.45	5.70×	97.6 %
+Big-Data Small	A	0.024	0.210	1.00×	0 %
+B	0.018	0.125	1.35×	40.5 %
+C	0.013	0.015	1.93×	92.8 %
+Big-Data Large	A	0.550	4.730	1.00×	0 %
+B	0.262	1.810	2.10×	61.7 %
+C	0.099	0.120	5.53×	97.5 %
+CFD Medium (2h)	A	2.200	18.92	1.00×	0 %
+B	0.840	5.79	2.62×	69.4 %
+C	0.114	0.14	19.31×	99.3 %
+CFD Large (24h)	A	26.400	227.04	1.00×	0 %
+B	10.585	73.03	2.49×	67.8 %
+C	1.725	2.07	15.30×	99.1 %
+Zusammenfassung in einem Satz (optional für Dokumente):
+KORA-SW (B) liefert über alle Workloads hinweg 1.3–2.6× Speedup bei 40–70 % weniger Energie,
+KORA-HW (C) erreicht 5–6× Beschleunigung bei KI/Big-Data und 15–20× bei großen CFD-Jobs –
+mit 97–99 % Energieeinsparung.

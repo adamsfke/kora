@@ -192,10 +192,12 @@ der dominierenden Ressourcen geworden. Gründe dafür sind:
 Bei vielen Big-Data- und numerischen Workloads entsteht der Großteil der
 Gesamtausführungszeit aus:
 
-    T_{mem} \approx 
-    \frac{D_{seq}}{BW_{seq}} + 
-    \frac{D_{rnd}}{BW_{rnd}} + 
-    N_{access} \cdot L_{mem}.
+$$
+T_{mem} \approx 
+\frac{D_{seq}}{BW_{seq}} + 
+\frac{D_{rnd}}{BW_{rnd}} + 
+N_{access} \cdot L_{mem}.
+$$
 
 Mit wachsender Modellgröße werden Speicheroperationen zu
 **Megabarrieren** im Rechenfluss: Jeder Ausführungsschritt wartet darauf,
@@ -220,7 +222,9 @@ Allreduce-Operationen auftreten.
 
 Der Kommunikations-Term lässt sich grob modellieren als:
 
-    T_{comm} = n_{msg} \cdot L_{net} + \frac{V}{BW_{net}}.
+$$
+T_{comm} = n_{msg} \cdot L_{net} + \frac{V}{BW_{net}}.
+$$
 
 Bei großen KI-Modellen oder numerischen Simulationen
 werden diese Terme schnell dominierend.
@@ -237,7 +241,9 @@ iterativen PDE-Lösern) verursachen:
 
 Die Kosten einer globalen Barrier lauten vereinfacht:
 
-    T_{sync} = L_{sync} \cdot N_{sync}.
+$$
+T_{sync} = L_{sync} \cdot N_{sync}.
+$$
 
 In realen Systemen werden Barrieren zu determinierenden Engpässen,
 weil sie:
@@ -362,7 +368,9 @@ nominalen FLOP-Leistung effektiv genutzt werden.
 
 Unter realen Bedingungen lässt sich der Compute-Term vereinfachen als:
 
-    T_{compute} = \frac{F}{R_{compute}} \cdot O_{compute}.
+$$
+T_{compute} = \frac{F}{R_{compute}} \cdot O_{compute}.
+$$
 
 Selbst wenn die FLOP-Leistung steigt, wird der Einfluss dieses Terms kleiner,
 weil der Gesamtausführungszeitraum zunehmend von anderen Faktoren bestimmt wird:
@@ -408,7 +416,9 @@ Moderne Cluster arbeiten nicht mehr lokal, sondern verteilen Daten über:
 
 Der Kommunikations-Term lautet:
 
-    T_{comm} = n_{msg} \cdot L_{net} + \frac{V}{BW_{net}}.
+$$
+T_{comm} = n_{msg} \cdot L_{net} + \frac{V}{BW_{net}}.
+$$
 
 Dieser Term wächst:
 
@@ -425,7 +435,9 @@ immer noch dieselbe Datenmenge durch das Netzwerk schieben.
 
 Barrieren können nicht durch FLOPs beschleunigt werden.
 
-    T_{sync} = N_{sync} \cdot L_{sync}.
+$$
+T_{sync} = N_{sync} \cdot L_{sync}.
+$$
 
 Selbst mit mehr Compute-Power bleibt jede Barrier gleich teuer.
 Und je größer das System wird, desto häufiger müssen Barrieren eingeführt werden.
@@ -693,7 +705,9 @@ KORA definiert zwei Reproduzierbarkeitskennzahlen:
 
 #### 1) r_bit — bitweise Reproduzierbarkeit  
 
-    r_{bit} = 1.0
+$$
+r_{bit} = 1.0
+$$
 
 bei Architektur C (Monolith).
 
@@ -702,7 +716,9 @@ Jeder Durchlauf liefert *bitidentische Ergebnisse*.
 
 #### 2) r_run — Wiederholungsfaktor  
 
-    r_{run} = 1.0
+$$
+r_{run} = 1.0
+$$
 
 bei Architektur C.
 
@@ -1261,7 +1277,9 @@ Architekturprinzipien abgeleitet und validiert werden.
 Das v3.0-Modell beschreibt Ausführungszeit als Summe aus vier
 fundamentalen Termen:
 
-    T = T_{compute} + T_{mem} + T_{comm} + T_{sync}.
+$$
+T = T_{compute} + T_{mem} + T_{comm} + T_{sync}.
+$$
 
 Diese Darstellung ist nicht nur eine mathematische Zerlegung,  
 sondern eine Abbildung realer physikalischer und organisatorischer Grenzen,  
@@ -1517,7 +1535,9 @@ charakterisiert sind, besitzt der Monolith einen **hard-coded Execution Path**:
 
 Das Resultat ist ein vollständig reproduzierbarer Ablauf:
 
-    r_{bit} = 1.0, \quad r_{run} = 1.0.
+$$
+r_{bit} = 1.0, \quad r_{run} = 1.0.
+$$
 
 Damit wird der Monolith zur ersten Architektur,  
 die *wissenschaftlich echte Deterministik* ermöglicht.
@@ -2071,7 +2091,9 @@ lastabhängige Partitionierung.
 
 Der Zugriff ist immer:
 
-    L_{memory} = \text{konstant}
+§§
+L_{memory} = \text{konstant}
+§§
 
 (z. B. 12–20 Takte, abhängig vom Prozessknoten)
 
@@ -2140,7 +2162,9 @@ Diese vier Fenster sind deterministisch sequenziert.
 
 #### Ergebnis:
 
-    L_{effektiv} = L_{bankdefault}
+$$
+L_{effektiv} = L_{bankdefault}
+$$
 
 Ohne Variation, ohne Konflikte, ohne dynamische Verzögerungen.
 
@@ -2185,7 +2209,9 @@ Typische Werte (prozessabhängig):
 
 Damit ergibt sich ein Gesamtzugriff:
 
-    L_{gesamt} \approx 25–40 \text{ Takte}
+$$
+L_{gesamt} \approx 25–40 \text{ Takte}
+$$
 
 — garantiert, ohne Variation.
 
@@ -2353,19 +2379,26 @@ keine Pipeline-Stalls.
 Ein Speicherzugriff eines Tiles \( T_i \) auf Bank \( B_j \) ist gültig, wenn:
 
 1. **Zugriff im korrekten Tile-Zeitfenster:** 
-    t \in W_{tile}(T_i)
+$$
+t \in W_{tile}(T_i)
+$$
 
 2. **Zugriff im korrekten Bank-Zeitfenster:**
-    t \in W_{bank}(B_j)
-
+$$
+t \in W_{bank}(B_j)
+$$
 3. **Zugriff entspricht der statischen Mapping-Tabelle:**
-    map(T_i) = B_j
+$$
+map(T_i) = B_j
+$$
 
 4. **keine konkurrierenden Schreib-/Lesekonflikte**  
    (durch Rule 3 strukturell ausgeschlossen)
 
 5. **DMA-Zeitslots passen in globale TDM-Fabric:**
-    slot(DT_k) = W_{dt}(T_i)
+$$
+slot(DT_k) = W_{dt}(T_i)
+$$
 
 Damit ist jeder Zugriff logisch und zeitlich vollständig festgelegt.
 
@@ -2386,7 +2419,9 @@ Dies führt zu:
 
 #### (1) stabiler Zeit pro Zugriff  
 
-    L_{total} \approx 25–40 \text{ Takte, garantiert}
+$$
+L_{total} \approx 25–40 \text{ Takte, garantiert}
+$$
 
 #### (2) stabiler Energieverbrauch  
 
@@ -2560,12 +2595,13 @@ Nie passiert:
 
 #### Formel:
 
-Sei **\( P_{i \rightarrow j} \)** der Pfad von Tile **\( i \)** zu Einheit **\( j \)**.
+Sei **$\( P_{i \rightarrow j} \)$** der Pfad von Tile **$\( i \)$** zu Einheit **$\( j \)$**.
 
 Dann gilt:
+$$
+P_{i \rightarrow j}(t) = P_{i \rightarrow j}(0) \quad \forall t
+$$
 
-    P_{i \rightarrow j}(t) = P_{i \rightarrow j}(0) \quad \forall t
-  
 Das bedeutet:
 **Jeder Pfad ist über die gesamte Ausführungszeit unverändert.**
 
@@ -2575,23 +2611,27 @@ Das bedeutet:
 
 Die TDM-Fabric besitzt eine feste pro-Zyklus-Bandbreite:
 
-    BW_{fabric} = \frac{W}{T_{slot}}
+$$
+BW_{fabric} = \frac{W}{T_{slot}}
+$$
 
 mit:
 
-- **\( W \)** = Wortbreite des Pfads (z. B. 256 oder 512 Bit)  
-- **\( T_{slot} \)** = Slotdauer  
+- $\( W \)$ = Wortbreite des Pfads (z. B. 256 oder 512 Bit)  
+- $\( T_{slot} \)$ = Slotdauer  
 
 #### Latenz:
 
 Da Routing deterministisch ist, ergibt sich die Latenz:
 
-    L_{fabric} = n_{hops} \cdot T_{slot}
+$$
+L_{fabric} = n_{hops} \cdot T_{slot}
+$$
 
 Da alle Hops feste Leitungslängen besitzen:
 
-- **n_{hops} ist konstant**  
-- T_{slot} ist konstant  
+- **$n_{hops}$ ist konstant**  
+- $T_{slot}$ ist konstant  
 
 → **keine Variabilität**.
 
@@ -2785,7 +2825,9 @@ auf viele Software-Schichten verteilt sind:
 
 Er definiert die Partitionierung des gesamten Daten- und Aufgabenraums:
 
-    W = \{W_1, W_2, \ldots, W_n\}
+$$
+W = \{W_1, W_2, \ldots, W_n\}
+$$
 
 Dabei wird **jede Partition deterministisch einem Tile-Cluster zugewiesen.**
 
@@ -2883,10 +2925,12 @@ Der SRDB garantiert:
 - vollständige Reproduzierbarkeit
 
 Formal:
-
-    f_{exec}(input) = output
-
-    \forall\, runs: f_{exec}^{(1)} = f_{exec}^{(2)} = \cdots
+$$
+f_{exec}(input) = output
+$$
+$$
+\forall\, runs: f_{exec}^{(1)} = f_{exec}^{(2)} = \cdots
+$$
 
 ### 15.6 Energieeffizienz durch SRDB
 
@@ -3003,8 +3047,8 @@ Ein Scheduling Tree ist ein gerichteter, azyklischer Baum:
 
 mit:
 
-- **\( V \)** = Operationen  
-- **\( E \)** = deterministische Abhängigkeiten
+- **$\( V \)$** = Operationen  
+- **$\( E \)$** = deterministische Abhängigkeiten
 
 Der Baum wird *niemals* zur Laufzeit verändert.
 
@@ -3060,7 +3104,9 @@ Stattdessen:
 
 #### Konsequenz:
 
-    T_{execution}^{(run1)} = T_{execution}^{(run2)} = \cdots
+$$
+T_{execution}^{(run1)} = T_{execution}^{(run2)} = \cdots
+$$
 
 Keine Variation. Kein Jitter.
 
@@ -3097,8 +3143,9 @@ Der Scheduling Tree bestimmt die Zeitfenster für:
 
 Die Zeit wird in **Scheduling Periods (SP)** geteilt:
 
-    SP = \{sp_1, sp_2, ..., sp_N\}
-
+$$
+SP = \{sp_1, sp_2, ..., sp_N\}
+$$
 Jede Period enthält:
 
 - Compute-Fenster  
@@ -3310,7 +3357,9 @@ Sie synchronisieren:
 
 Eine globale Barrier ist erreicht, wenn:
 
-    \forall\, TG_i:\; state(TG_i)=phase\_complete
+$$
+\forall\, TG_i:\; state(TG_i)=phase\_complete
+$$
 
 und nur dann darf der SRDB:
 
@@ -3356,13 +3405,15 @@ Synchronisation erfolgt in **deterministischen Zeitfenstern**:
 
 #### Formalisierung:
 
-    T_{barrier}(micro) = c_1
-    T_{barrier}(regional) = c_2
-    T_{barrier}(global) = c_3
+$$
+T_{barrier}(micro) = c_1
+T_{barrier}(regional) = c_2
+T_{barrier}(global) = c_3
+$$
 
 mit:
 
-- **\( c_1, c_2, c_3 \)** konstant  
+- **$\( c_1, c_2, c_3 \)$** konstant  
 - keine Variationsbreite
 
 #### Energieprofil:
@@ -3474,7 +3525,9 @@ Der SRDB definiert eine Folge von **Ausführungsphasen**:
 
 Für jede Phase existiert ein **global deterministischer Plan**:
 
-    Exec = \{Phase_0, Phase_1, \ldots, Phase_k\}
+$$
+Exec = \{Phase_0, Phase_1, \ldots, Phase_k\}
+$$
 
 In jeder Phase ist klar definert:
 
@@ -3575,31 +3628,37 @@ Temperatur, vorherigen Runs oder sonstigen Zuständen.
 
 ### 18.6 Formale Beschreibung des deterministischen Ablaufs
 
-Sei ein Workload \( W \) durch folgende Komponenten beschrieben:
+Sei ein Workload $\( W \)$ durch folgende Komponenten beschrieben:
 
-- Datensatz \( D \)  
-- Operationen \( O = \{o_1, o_2, \ldots, o_n\} \)  
-- Abhängigkeiten \( Dep \subseteq O \times O \)  
+- Datensatz $\( D \)$  
+- Operationen $\( O = \{o_1, o_2, \ldots, o_n\} \)$  
+- Abhängigkeiten $\( Dep \subseteq O \times O \)$  
 
 Der Monolith erzeugt daraus:
 
-- eine Partitionierung \( P \) über die Tiles  
-- einen globalen Scheduling Tree \( GT \)  
-- regionale Bäume \( RT_i \)  
-- lokale Bäume \( LT_{ij} \)
+- eine Partitionierung $\( P \)$ über die Tiles  
+- einen globalen Scheduling Tree $\( GT \)$  
+- regionale Bäume $\( RT_i \)$  
+- lokale Bäume $( LT_{ij} \)$
 
 Der Ausführungsablauf wird zu einer Funktion:
 
-    Exec_W: D \rightarrow R
+$$
+Exec_W: D \rightarrow R
+$$
 
 mit:
 
-    Exec_W = F(GT, \{RT_i\}, \{LT_{ij}\}, TDM, MT, ST, SRDB)
+$$
+Exec_W = F(GT, \{RT_i\}, \{LT_{ij}\}, TDM, MT, ST, SRDB)
+$$
 
 Da alle beteiligten Komponenten deterministisch sind,
 gilt:
 
-    \forall\, k, l: Exec_W^{(k)}(D) = Exec_W^{(l)}(D) = R
+$$
+\forall\, k, l: Exec_W^{(k)}(D) = Exec_W^{(l)}(D) = R
+$$
 
 Es existiert keine Abhängigkeit von:
 
@@ -3837,11 +3896,13 @@ sondern stoppt in einer definierten, reproduzierbaren Weise.
 
 ### 19.7 Formale Beschreibung deterministischer Fehlerreaktionen
 
-Sei ein Fehler \( E \) detektiert in Phase \( P \).
+Sei ein Fehler $\( E \)$ detektiert in Phase $\( P \)$.
 
 KORA garantiert:
 
-    Handle(E, P) = R_E
+$$
+Handle(E, P) = R_E
+$$
 
 mit:
 
@@ -3851,7 +3912,9 @@ mit:
 
 und insbesondere:
 
-    \forall\, runs: R_{E}^{(1)} = R_{E}^{(2)} = \cdots
+$$
+\forall\, runs: R_{E}^{(1)} = R_{E}^{(2)} = \cdots
+$$
 
 Das System reagiert **immer gleich**.
 
@@ -4007,11 +4070,15 @@ funktionale Abbildung des Problems, nicht der Systemzustände.
 
 Formal:
 
-    E_{kora} \approx E_{ideal} \cdot (1 + \epsilon),\quad \epsilon \in [0.05, 0.10]
+$$
+E_{kora} \approx E_{ideal} \cdot (1 + \epsilon),\quad \epsilon \in [0.05, 0.10]
+$$
 
 wo klassische Systeme haben:
 
-    E_{classic} \approx E_{ideal} \cdot (1.3 - 1.7)
+$$
+E_{classic} \approx E_{ideal} \cdot (1.3 - 1.7)
+$$
 
 ### 20.5 Thermisches Verhalten: Deterministische Wärmeprofile
 
@@ -4085,11 +4152,15 @@ Weil der Monolith:
 
 kann ein Rechenzentrum ihn deutlich effizienter kühlen:
 
-    PUE_{kora} \approx 1.05 - 1.15
+$$
+PUE_{kora} \approx 1.05 - 1.15
+$$
 
 vs.
 
-    PUE_{classic} \approx 1.2 - 1.6
+$$
+PUE_{classic} \approx 1.2 - 1.6
+$$
 
 Der Effekt ist beträchtlich.
 
@@ -4302,7 +4373,9 @@ Kommunikation erfolgt über:
 
 #### Formale Latenz:
 
-    L_{inter} = n_{hops} \cdot T_{slot} + L_{serdes}
+$$
+L_{inter} = n_{hops} \cdot T_{slot} + L_{serdes}
+$$
 
 mit allen Parametern **konstant**.
 
@@ -4334,7 +4407,9 @@ KORA erreicht nahezu **lineare Skalierung**, aber strukturell, nicht dynamisch.
 
 Für viele Workloads gilt:
 
-    T(N) \approx \frac{T(1)}{N}
+$$
+T(N) \approx \frac{T(1)}{N}
+$$
 
 mit minimalen Overheads, weil:
 
@@ -4412,14 +4487,14 @@ Der Benutzer beschreibt ausschließlich *was* berechnet werden soll, nicht *wie*
 
 Beispiele:
 
-u = field(shape=(Nx, Ny, Nz))
-u_next = u + dt * divergence(flux(u))
+    u = field(shape=(Nx, Ny, Nz))
+    u_next = u + dt * divergence(flux(u))
 
-y = Linear(W, x)
-loss = MSE(y, target)
+    y = Linear(W, x)
+    loss = MSE(y, target)
 
-A = dense_matrix(...)
-x = A @ b
+    A = dense_matrix(...)
+    x = A @ b
 
 HAPI abstrahiert vollständig von Scheduling, Speicher und DMA.
 
@@ -4750,7 +4825,9 @@ Durch fixe Bank-Zuordnung und feste Transfer-Slots:
 
 Formale Latenz:
 
-    L_total = L_bank + L_dma + L_fabric
+$$
+L_total = L_bank + L_dma + L_fabric
+$$
 
 mit allen Komponenten konstant.
 
@@ -6541,7 +6618,7 @@ Jede Phase wird bestimmt als:
 
 Da f_clock konstant ist, wird Zeit linear.
 
-Beispiel (Einrückung):
+Beispiel:
 
     Compute Block 32×32 = 1428 cycles
     DMA In Block = 102 cycles

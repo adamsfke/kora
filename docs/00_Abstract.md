@@ -2,8 +2,8 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0  
-**Dokumenttyp:** Abstract / Projektübersicht  
+**Lizenz:** CC-BY-SA 4.0
+**Dokumenttyp:** Abstract / Projektübersicht
 **Status:** Konzeptphase
 
 ---
@@ -233,4 +233,3 @@ KORA — **The architecture for reproducible science.**
 - **Code-Repository:** https://github.com/adamsfke/kora  
 - **Vollständige KORA-Dokumentation:** https://osf.io/8wyec  
 - **Kontakt:** mailto:adamsfke@proton.me  
-

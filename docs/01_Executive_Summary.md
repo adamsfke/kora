@@ -2,8 +2,8 @@
 
 **Autoren:** Frank Meyer  
 **Version:** 2.0 (November 2025)  
-**Lizenz:** CC-BY-SA 4.0  
-**Dokumenttyp:** Übersicht Kernaussagen  
+**Lizenz:** CC-BY-SA 4.0
+**Dokumenttyp:** Übersicht Kernaussagen 
 **Status:** Konzeptphase
 
 ---
